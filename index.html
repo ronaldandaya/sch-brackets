@@ -21,7 +21,8 @@
 
   .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1.5px; color: #00A896; margin: 0 0 16px; }
 
-  .teams { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 36px; }
+  .teams { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 36px; }
+  @media (max-width: 640px) { .teams { grid-template-columns: 1fr; } }
 
   .team-card { background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); border: 2px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 24px 22px; text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: all .25s; position: relative; overflow: hidden; }
   .team-card.ready { border-color: rgba(0,168,150,0.4); }
