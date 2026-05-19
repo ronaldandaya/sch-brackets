@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SCH 5th Girls - Reno Schedule</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 28px 16px; background: linear-gradient(170deg, #0a0a0a 0%, #1a1a1a 50%, #0d2a2a 100%); color: #fff; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; min-height: 100vh; }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  .back-nav { margin-bottom: 18px; }
+  .back-nav a { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 999px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: #c0c0c0; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; transition: all .2s; }
+  .back-nav a:hover { background: rgba(0,168,150,0.15); border-color: #00A896; color: #fff; }
+  .header { text-align: center; padding-bottom: 14px; border-bottom: 2px solid rgba(0,168,150,0.3); margin-bottom: 28px; }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #00A896; margin: 0 0 8px; }
+  h1 { font-family: 'Bebas Neue', sans-serif; font-size: 52px; line-height: 1.05; letter-spacing: 1px; margin: 0 0 6px; }
+  .sub { font-size: 15px; color: #b8b8b8; margin: 0; }
+
+  .format-note { background: rgba(0,168,150,0.08); border: 1px solid rgba(0,168,150,0.3); border-radius: 10px; padding: 14px 18px; font-size: 13px; color: #d0d0d0; margin-bottom: 24px; line-height: 1.6; }
+  .format-note b { color: #00A896; }
+
+  .games { display: flex; flex-direction: column; gap: 14px; }
+
+  .game-card { background: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)); border: 2px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 22px 24px; }
+  .game-card.home { border-color: rgba(0,168,150,0.5); }
+  .game-card.away { border-color: rgba(192,192,192,0.3); }
+  .game-card.championship { border-color: #ffb81c; background: linear-gradient(160deg, rgba(255,184,28,0.12), rgba(255,184,28,0.02)); }
+
+  .game-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
+  .game-num { font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: 2px; color: #888; }
+  .uniform-tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; }
+  .uniform-teal { background: #00A896; color: #0a0a0a; }
+  .uniform-black { background: #1a1a1a; color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+  .uniform-cond { background: rgba(255,184,28,0.2); color: #ffb81c; border: 1px solid rgba(255,184,28,0.5); }
+
+  .game-day { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; margin: 0 0 4px; color: #fff; }
+  .game-time { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 1px; color: #00A896; margin: 0 0 14px; }
+
+  .game-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 14px; }
+  .meta-item { background: rgba(0,0,0,0.25); border-radius: 8px; padding: 10px 14px; }
+  .meta-lbl { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #888; margin-bottom: 4px; }
+  .meta-val { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.5px; color: #fff; }
+
+  .matchup { padding: 14px; background: rgba(0,0,0,0.3); border-radius: 8px; text-align: center; border: 1px dashed rgba(255,255,255,0.15); }
+  .matchup-lbl { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #888; margin-bottom: 6px; }
+  .matchup-val { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; color: #fff; }
+  .matchup-arrival { font-size: 12px; color: #c0c0c0; margin-top: 8px; }
+  .matchup-arrival b { color: #00A896; }
+
+  .footer { margin-top: 28px; padding: 18px 22px; background: rgba(0,168,150,0.06); border-left: 4px solid #00A896; border-radius: 0 8px 8px 0; font-size: 13px; color: #c0c0c0; line-height: 1.6; }
+  .footer b { color: #fff; }
+  .footer p { margin: 0 0 10px; }
+  .footer p:last-child { margin-bottom: 0; }
+
+  @media (max-width: 768px) {
+    body { padding: 18px 12px; }
+    h1 { font-size: 34px; }
+    .eyebrow { font-size: 10px; }
+    .sub { font-size: 13px; }
+    .game-card { padding: 18px 16px; }
+    .game-day { font-size: 22px; }
+    .game-time { font-size: 28px; }
+    .meta-val { font-size: 16px; }
+    .matchup-val { font-size: 18px; }
+    .format-note { font-size: 12px; padding: 12px 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="back-nav"><a href="../index.html">&larr; All Teams</a></div>
+  <div class="header">
+    <p class="eyebrow">Reno Memorial Weekend &nbsp;|&nbsp; Girls 5th Level 2, Pool B</p>
+    <h1>5TH GRADE GIRLS &mdash; SCHEDULE</h1>
+    <p class="sub">Round-robin pool play &middot; All 4 games locked in</p>
+  </div>
+
+  <div class="format-note">
+    <b>Format:</b> Pool B has 5 teams. Each team plays 4 games (Sat, Sat, Sun, Mon). No win/lose bracket &mdash; you play your full schedule regardless of results. <b>Finish 1st in pool</b> &rarr; advance to championship game Mon 4:30 PM CC28 vs 1st in Pool A.
+  </div>
+
+  <div class="games">
+
+    <div class="game-card away">
+      <div class="game-top">
+        <span class="game-num">GAME 1 / 4</span>
+        <span class="uniform-tag uniform-black">BLACK (Away)</span>
+      </div>
+      <div class="game-day">Saturday May 23</div>
+      <div class="game-time">11:30 AM</div>
+      <div class="game-meta">
+        <div class="meta-item"><div class="meta-lbl">Court</div><div class="meta-val">CC31</div></div>
+        <div class="meta-item"><div class="meta-lbl">Venue</div><div class="meta-val">RSCC</div></div>
+      </div>
+      <div class="matchup">
+        <div class="matchup-lbl">Matchup</div>
+        <div class="matchup-val">SCH vs ELEVATE 4/5th Girls</div>
+        <div class="matchup-arrival">Arrive by <b>11:00 AM</b> for warmup at Court CC31</div>
+      </div>
+    </div>
+
+    <div class="game-card home">
+      <div class="game-top">
+        <span class="game-num">GAME 2 / 4</span>
+        <span class="uniform-tag uniform-teal">TEAL (Home)</span>
+      </div>
+      <div class="game-day">Saturday May 23</div>
+      <div class="game-time">3:15 PM</div>
+      <div class="game-meta">
+        <div class="meta-item"><div class="meta-lbl">Court</div><div class="meta-val">CC37</div></div>
+        <div class="meta-item"><div class="meta-lbl">Venue</div><div class="meta-val">RSCC</div></div>
+      </div>
+      <div class="matchup">
+        <div class="matchup-lbl">Matchup</div>
+        <div class="matchup-val">Lady HUI Inferno vs SCH</div>
+        <div class="matchup-arrival">Arrive by <b>2:45 PM</b> for warmup at Court CC37</div>
+      </div>
+    </div>
+
+    <div class="game-card away">
+      <div class="game-top">
+        <span class="game-num">GAME 3 / 4</span>
+        <span class="uniform-tag uniform-black">BLACK (Away)</span>
+      </div>
+      <div class="game-day">Sunday May 24</div>
+      <div class="game-time">11:30 AM</div>
+      <div class="game-meta">
+        <div class="meta-item"><div class="meta-lbl">Court</div><div class="meta-val">CC38</div></div>
+        <div class="meta-item"><div class="meta-lbl">Venue</div><div class="meta-val">RSCC</div></div>
+      </div>
+      <div class="matchup">
+        <div class="matchup-lbl">Matchup</div>
+        <div class="matchup-val">SCH vs Velocity</div>
+        <div class="matchup-arrival">Arrive by <b>11:00 AM</b> for warmup at Court CC38</div>
+      </div>
+    </div>
+
+    <div class="game-card home">
+      <div class="game-top">
+        <span class="game-num">GAME 4 / 4</span>
+        <span class="uniform-tag uniform-teal">TEAL (Home)</span>
+      </div>
+      <div class="game-day">Monday May 25</div>
+      <div class="game-time">2:00 PM</div>
+      <div class="game-meta">
+        <div class="meta-item"><div class="meta-lbl">Court</div><div class="meta-val">CC37</div></div>
+        <div class="meta-item"><div class="meta-lbl">Venue</div><div class="meta-val">RSCC</div></div>
+      </div>
+      <div class="matchup">
+        <div class="matchup-lbl">Matchup</div>
+        <div class="matchup-val">Olympic Club (Robbie) vs SCH</div>
+        <div class="matchup-arrival">Arrive by <b>1:30 PM</b> for warmup at Court CC37</div>
+      </div>
+    </div>
+
+    <div class="game-card championship">
+      <div class="game-top">
+        <span class="game-num">CHAMPIONSHIP GAME (conditional)</span>
+        <span class="uniform-tag uniform-cond">If 1st in Pool</span>
+      </div>
+      <div class="game-day">Monday May 25</div>
+      <div class="game-time">4:30 PM</div>
+      <div class="game-meta">
+        <div class="meta-item"><div class="meta-lbl">Court</div><div class="meta-val">CC28</div></div>
+        <div class="meta-item"><div class="meta-lbl">Vs</div><div class="meta-val">1st in Pool A</div></div>
+      </div>
+      <div class="matchup">
+        <div class="matchup-lbl">Bonus game</div>
+        <div class="matchup-val">Only if SCH finishes 1st in Pool B</div>
+        <div class="matchup-arrival">Pool A winner = winner of: Bueno 11u / SJ Spartans / NorCal Force 5th / Shasta Fever / Lady Legends</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <p><b>Pool B teams:</b> Velocity, Lady HUI Inferno, Shark City Hoops, ELEVATE 4/5th Girls, Olympic Club (Robbie). Each team plays 4 of the 5 others &mdash; SCH skips Olympic Club Robbie until Monday's matchup (final game).</p>
+    <p><b>Long gap on Saturday:</b> 11:30 AM tip then 3:15 PM tip = ~3-hour gap. Plan downtime &mdash; nap, lunch, or hotel return between games.</p>
+    <p><b>All times subject to change</b> &mdash; confirm in Jam On It app the morning of each game.</p>
+  </div>
+</div>
+</body>
+</html>

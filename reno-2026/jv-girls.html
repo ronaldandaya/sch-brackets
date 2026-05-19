@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SCH JV Girls - Reno Interactive Bracket</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 28px 16px; background: linear-gradient(170deg, #0a0a0a 0%, #1a1a1a 50%, #0d2a2a 100%); color: #fff; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; min-height: 100vh; }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  .back-nav { margin-bottom: 18px; }
+  .back-nav a { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 999px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: #c0c0c0; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; transition: all .2s; }
+  .back-nav a:hover { background: rgba(0,168,150,0.15); border-color: #00A896; color: #fff; }
+  .header { text-align: center; padding-bottom: 14px; border-bottom: 2px solid rgba(0,168,150,0.3); margin-bottom: 28px; }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #00A896; margin: 0 0 8px; }
+  h1 { font-family: 'Bebas Neue', sans-serif; font-size: 52px; line-height: 1.05; letter-spacing: 1px; margin: 0 0 6px; }
+  .sub { font-size: 15px; color: #b8b8b8; margin: 0; }
+  .trail { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 24px; min-height: 32px; }
+  .trail-item { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: #d0d0d0; cursor: pointer; transition: all .2s; }
+  .trail-item:hover { background: rgba(0,168,150,0.15); border-color: #00A896; color: #fff; }
+  .trail-item.win::before { content: 'W'; color: #4ade80; font-weight: 800; }
+  .trail-item.lose::before { content: 'L'; color: #f87171; font-weight: 800; }
+  .trail-arrow { color: #555; align-self: center; }
+  .game-card { background: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)); border: 2px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 32px 28px; margin-bottom: 24px; transition: all .3s; }
+  .game-card.pool { border-color: #00A896; background: linear-gradient(160deg, rgba(0,168,150,0.14), rgba(0,168,150,0.02)); }
+  .game-card.champ { border-color: #ffb81c; background: linear-gradient(160deg, rgba(255,184,28,0.10), rgba(255,184,28,0.01)); }
+  .game-card.conso-top { border-color: #c0c0c0; background: linear-gradient(160deg, rgba(192,192,192,0.08), rgba(192,192,192,0.01)); }
+  .game-card.conso-low { border-color: #888; background: linear-gradient(160deg, rgba(150,150,150,0.06), rgba(150,150,150,0.01)); }
+  .game-card.final-game { border-color: #ff5252; background: linear-gradient(160deg, rgba(255,82,82,0.16), rgba(255,184,28,0.05)); }
+  .game-card.result { border-color: #4ade80; background: linear-gradient(160deg, rgba(74,222,128,0.18), rgba(0,168,150,0.05)); text-align: center; }
+  .game-tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; margin-bottom: 12px; }
+  .tag-pool { background: #00A896; color: #0a0a0a; }
+  .tag-champ { background: rgba(255,184,28,0.2); color: #ffb81c; border: 1px solid rgba(255,184,28,0.5); }
+  .tag-conso-top { background: rgba(192,192,192,0.15); color: #d0d0d0; border: 1px solid rgba(192,192,192,0.5); }
+  .tag-conso-low { background: rgba(150,150,150,0.15); color: #b0b0b0; border: 1px solid rgba(150,150,150,0.5); }
+  .tag-final { background: rgba(255,82,82,0.2); color: #ff7878; border: 1px solid rgba(255,82,82,0.5); }
+  .game-title { font-family: 'Bebas Neue', sans-serif; font-size: 44px; line-height: 1; letter-spacing: 1px; margin: 0 0 18px; color: #fff; }
+  .game-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 20px; }
+  .meta-item { background: rgba(0,0,0,0.25); border-radius: 8px; padding: 12px 14px; }
+  .meta-lbl { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #888; margin-bottom: 4px; }
+  .meta-val { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 0.5px; color: #fff; }
+  .meta-val.teal { color: #00A896; }
+  .matchup { padding: 16px; background: rgba(0,0,0,0.3); border-radius: 8px; text-align: center; border: 1px dashed rgba(255,255,255,0.15); }
+  .matchup-lbl { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #888; margin-bottom: 6px; }
+  .matchup-val { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 1px; color: #fff; }
+  .game-note { margin-top: 14px; padding: 10px 14px; background: rgba(0,168,150,0.08); border-left: 3px solid #00A896; border-radius: 0 6px 6px 0; font-size: 13px; color: #c8c8c8; }
+  .decision { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+  .decision button { padding: 22px 18px; border-radius: 12px; border: 2px solid; background: transparent; color: #fff; font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; cursor: pointer; transition: all .2s; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .decision button .label-sub { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 2px; opacity: 0.75; }
+  .decision .win-btn { border-color: #4ade80; }
+  .decision .win-btn:hover { background: rgba(74,222,128,0.15); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(74,222,128,0.25); }
+  .decision .lose-btn { border-color: #f87171; }
+  .decision .lose-btn:hover { background: rgba(248,113,113,0.15); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(248,113,113,0.25); }
+  .result-trophy { font-size: 60px; margin: 6px 0 12px; }
+  .result-place { font-family: 'Bebas Neue', sans-serif; font-size: 64px; letter-spacing: 2px; color: #4ade80; line-height: 1; margin-bottom: 10px; }
+  .result-place.silver { color: #d0d0d0; }
+  .result-detail { font-size: 16px; color: #d0d0d0; margin-bottom: 6px; }
+  .result-count { display: inline-block; margin-top: 14px; padding: 8px 16px; background: rgba(0,168,150,0.15); border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #00A896; }
+  .controls { display: flex; gap: 12px; justify-content: center; margin-top: 8px; flex-wrap: wrap; }
+  .controls button { padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.04); color: #d0d0d0; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: all .2s; }
+  .controls button:hover { background: rgba(0,168,150,0.15); border-color: #00A896; color: #fff; }
+  .footer { margin-top: 28px; padding: 18px 22px; background: rgba(0,168,150,0.06); border-left: 4px solid #00A896; border-radius: 0 8px 8px 0; font-size: 13px; color: #c0c0c0; line-height: 1.6; }
+  .footer b { color: #fff; }
+  .footer p { margin: 0 0 10px; }
+  .footer p:last-child { margin-bottom: 0; }
+  .fade-in { animation: fadeIn 0.35s ease-out; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  @media (max-width: 768px) {
+    body { padding: 18px 12px; }
+    h1 { font-size: 34px; letter-spacing: 0.5px; }
+    .eyebrow { font-size: 10px; }
+    .sub { font-size: 13px; }
+    .trail-item { font-size: 10px; padding: 5px 9px; }
+    .game-card { padding: 20px 18px; }
+    .game-title { font-size: 28px; margin-bottom: 14px; }
+    .game-meta { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .meta-val { font-size: 17px; }
+    .matchup-val { font-size: 18px; }
+    .decision { grid-template-columns: 1fr; gap: 10px; }
+    .decision button { padding: 18px 14px; font-size: 22px; }
+    .result-place { font-size: 48px; }
+    .footer { padding: 14px 16px; font-size: 12px; }
+  }
+  @media (max-width: 420px) { h1 { font-size: 28px; } .game-title { font-size: 24px; } .game-meta { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="back-nav"><a href="../index.html">&larr; All Teams</a></div>
+  <div class="header">
+    <p class="eyebrow">Reno Memorial Weekend &nbsp;|&nbsp; Girls 9th Level 2, Pool D</p>
+    <h1>JV GIRLS &mdash; INTERACTIVE BRACKET</h1>
+    <p class="sub">Pool play (2 games) &rarr; bracket placement based on standings</p>
+  </div>
+
+  <div id="explorer-view">
+    <div class="trail" id="trail"></div>
+    <div id="current-game"></div>
+    <div id="decision-area"></div>
+    <div class="controls" id="controls"></div>
+  </div>
+
+  <div class="footer">
+    <p><b>Format:</b> Pool D has 3 teams (SCH, Olympic Club Manny, Santa Cruz Strong). SCH plays 2 pool games on Saturday. Pool standings (after Sunday 2 PM Olympic vs SCS) determine which bracket SCH enters. <b>4 games guaranteed.</b></p>
+    <p><b>Pool seed simplification:</b> This explorer treats 2-0 = 1st seed, 1-1 = 2nd seed, 0-2 = 3rd seed. Actual seeding uses head-to-head and point differential tiebreakers if needed.</p>
+    <p><b>Opponents in bracket games</b> (1st/2nd/3rd in Pool A) confirmed once Pool A wraps Sunday morning. All times subject to change &mdash; confirm in Jam On It app.</p>
+  </div>
+</div>
+
+<script>
+  const games = {
+    pool1: { title: 'POOL GAME 1', tag: 'POOL D', tagClass: 'tag-pool', cardClass: 'pool', when: 'Sat May 23', time: '3:15 PM', court: 'CC50', uniform: 'BLACK (Away)', matchup: 'SCH vs Olympic Club (Manny)', note: 'First pool game. Outcome combined with Game 2 sets your Pool D seed.', winNext: 'pool2', loseNext: 'pool2' },
+    pool2: { title: 'POOL GAME 2', tag: 'POOL D', tagClass: 'tag-pool', cardClass: 'pool', when: 'Sat May 23', time: '8:15 PM', court: 'CC21', uniform: 'TEAL (Home)', matchup: 'SCH vs Santa Cruz Strong', note: 'Final pool game. Win/loss combined with Game 1 determines your bracket placement.', dynamic: true },
+
+    G1: { title: 'GAME 1', tag: 'CHAMPIONSHIP SEMI', tagClass: 'tag-champ', cardClass: 'champ', when: 'Sun May 24', time: '8:15 PM', court: 'CC49', matchup: 'SCH (1st in D) vs 1st in A', note: 'You are 1st in Pool D. Win = play for the championship Monday. Lose = play for 3rd place.', winNext: 'G3', loseNext: 'G4' },
+    G3: { title: 'GAME 3', tag: 'CHAMPIONSHIP', tagClass: 'tag-final', cardClass: 'final-game', when: 'Mon May 25', time: '3:15 PM', court: 'CC47', matchup: 'For 1st place', isFinal: true, winPlace: '1st PLACE', losePlace: '2nd PLACE', trophy: '🏆', placeColor: '' },
+    G4: { title: 'GAME 4', tag: '3rd PLACE GAME', tagClass: 'tag-champ', cardClass: 'champ', when: 'Mon May 25', time: '2:00 PM', court: 'CC10', matchup: 'For 3rd place', isFinal: true, winPlace: '3rd PLACE', losePlace: '4th PLACE', trophy: '🥉', placeColor: '' },
+
+    G5: { title: 'GAME 5', tag: '5TH/6TH SEMI', tagClass: 'tag-conso-top', cardClass: 'conso-top', when: 'Sun May 24', time: '7:00 PM', court: 'CC49', matchup: 'SCH (2nd in D) vs 2nd in A', note: 'You are 2nd in Pool D. Win = play for 5th place. Lose = play for 7th place.', winNext: 'G7', loseNext: 'G8' },
+    G7: { title: 'GAME 7', tag: '5th PLACE GAME', tagClass: 'tag-conso-top', cardClass: 'conso-top', when: 'Mon May 25', time: '11:30 AM', court: 'CC42', matchup: 'For 5th place', isFinal: true, winPlace: '5th PLACE', losePlace: '6th PLACE', trophy: '🏀', placeColor: 'silver' },
+    G8: { title: 'GAME 8', tag: '7th PLACE GAME', tagClass: 'tag-conso-top', cardClass: 'conso-top', when: 'Mon May 25', time: '11:30 AM', court: 'CC54', matchup: 'For 7th place', isFinal: true, winPlace: '7th PLACE', losePlace: '8th PLACE', trophy: '🏀', placeColor: 'silver' },
+
+    G9: { title: 'GAME 9', tag: '9TH/10TH SEMI', tagClass: 'tag-conso-low', cardClass: 'conso-low', when: 'Sun May 24', time: '5:45 PM', court: 'CC41', matchup: 'SCH (3rd in D) vs 3rd in A', note: 'You are 3rd in Pool D. Win = play for 9th place. Lose = play for 11th place.', winNext: 'G11', loseNext: 'G12' },
+    G11: { title: 'GAME 11', tag: '9th PLACE GAME', tagClass: 'tag-conso-low', cardClass: 'conso-low', when: 'Mon May 25', time: '10:15 AM', court: 'CC24', matchup: 'For 9th place', isFinal: true, winPlace: '9th PLACE', losePlace: '10th PLACE', trophy: '🏀', placeColor: 'silver' },
+    G12: { title: 'GAME 12', tag: '11th PLACE GAME', tagClass: 'tag-conso-low', cardClass: 'conso-low', when: 'Mon May 25', time: '9:00 AM', court: 'CC49', matchup: 'For 11th place', isFinal: true, winPlace: '11th PLACE', losePlace: '12th PLACE', trophy: '🏀', placeColor: 'silver' }
+  };
+
+  let path = [{ gameId: 'pool1', result: null }];
+  let finalResult = null;
+
+  function getNextGameId(stepGameId, result, currentPath) {
+    if (stepGameId === 'pool2') {
+      const p1 = currentPath.find(p => p.gameId === 'pool1').result;
+      const p2 = result;
+      if (p1 === 'win' && p2 === 'win') return 'G1';
+      if (p1 === 'lose' && p2 === 'lose') return 'G9';
+      return 'G5';
+    }
+    return games[stepGameId][result === 'win' ? 'winNext' : 'loseNext'];
+  }
+
+  function render() { renderTrail(); renderCurrent(); renderControls(); }
+
+  function renderTrail() {
+    const trail = document.getElementById('trail');
+    if (path.length === 0 && !finalResult) { trail.innerHTML = ''; return; }
+    const parts = [];
+    path.forEach((step, i) => {
+      const g = games[step.gameId];
+      if (step.result) parts.push(`<span class="trail-item ${step.result}" onclick="rewindTo(${i})">${g.title} &nbsp;${step.result === 'win' ? 'WIN' : 'LOSS'}</span>`);
+      else parts.push(`<span class="trail-item" style="background:rgba(0,168,150,0.2);border-color:#00A896;color:#fff">${g.title} &nbsp;NOW</span>`);
+      if (i < path.length - 1 || finalResult) parts.push('<span class="trail-arrow">&rarr;</span>');
+    });
+    if (finalResult) parts.push(`<span class="trail-item" style="background:rgba(74,222,128,0.15);border-color:#4ade80;color:#fff">${finalResult.place}</span>`);
+    trail.innerHTML = parts.join('');
+  }
+
+  function renderCurrent() {
+    const cur = document.getElementById('current-game');
+    const dec = document.getElementById('decision-area');
+    if (finalResult) {
+      const placeColorClass = finalResult.placeColor === 'silver' ? 'silver' : '';
+      cur.innerHTML = `<div class="game-card result fade-in"><div class="result-trophy">${finalResult.trophy}</div><div class="result-place ${placeColorClass}">${finalResult.place}</div><div class="result-detail">${games[finalResult.gameId].title} &nbsp;|&nbsp; ${games[finalResult.gameId].when} &nbsp;|&nbsp; ${games[finalResult.gameId].time} &nbsp;|&nbsp; Court ${games[finalResult.gameId].court}</div><div class="result-count">${path.length + 1} games played &middot; tournament complete</div></div>`;
+      dec.innerHTML = '';
+      return;
+    }
+    const step = path[path.length - 1];
+    const g = games[step.gameId];
+    if (g.isFinal) {
+      cur.innerHTML = `<div class="game-card ${g.cardClass} fade-in"><span class="game-tag ${g.tagClass}">${g.tag}</span><h2 class="game-title">${g.title}</h2><div class="game-meta"><div class="meta-item"><div class="meta-lbl">Date</div><div class="meta-val">${g.when}</div></div><div class="meta-item"><div class="meta-lbl">Tip</div><div class="meta-val teal">${g.time}</div></div><div class="meta-item"><div class="meta-lbl">Court</div><div class="meta-val">${g.court}</div></div></div><div class="matchup"><div class="matchup-lbl">Matchup</div><div class="matchup-val">${g.matchup}</div></div></div>`;
+      dec.innerHTML = `<div class="decision fade-in"><button class="win-btn" onclick="finalize('win')">WIN<span class="label-sub">${g.winPlace}</span></button><button class="lose-btn" onclick="finalize('lose')">LOSE<span class="label-sub">${g.losePlace}</span></button></div>`;
+      return;
+    }
+    cur.innerHTML = `<div class="game-card ${g.cardClass} fade-in"><span class="game-tag ${g.tagClass}">${g.tag}</span><h2 class="game-title">${g.title}</h2><div class="game-meta"><div class="meta-item"><div class="meta-lbl">Date</div><div class="meta-val">${g.when}</div></div><div class="meta-item"><div class="meta-lbl">Tip</div><div class="meta-val teal">${g.time}</div></div><div class="meta-item"><div class="meta-lbl">Court</div><div class="meta-val">${g.court}</div></div>${g.uniform ? `<div class="meta-item"><div class="meta-lbl">Uniform</div><div class="meta-val">${g.uniform}</div></div>` : ''}</div><div class="matchup"><div class="matchup-lbl">Matchup</div><div class="matchup-val">${g.matchup}</div></div>${g.note ? `<div class="game-note">${g.note}</div>` : ''}</div>`;
+
+    const winNextId = getNextGameId(step.gameId, 'win', path);
+    const loseNextId = getNextGameId(step.gameId, 'lose', path);
+    const nextWin = games[winNextId];
+    const nextLose = games[loseNextId];
+    dec.innerHTML = `<div class="decision fade-in"><button class="win-btn" onclick="choose('win')">WIN<span class="label-sub">&rarr; ${nextWin.title} &middot; ${nextWin.tag}</span></button><button class="lose-btn" onclick="choose('lose')">LOSE<span class="label-sub">&rarr; ${nextLose.title} &middot; ${nextLose.tag}</span></button></div>`;
+  }
+
+  function renderControls() {
+    const c = document.getElementById('controls');
+    const hasMoved = path.length > 1 || finalResult;
+    c.innerHTML = hasMoved ? `<button onclick="goBack()">&larr; Back one step</button><button onclick="reset()">Restart from 1st Game</button>` : '';
+  }
+
+  function choose(result) {
+    const step = path[path.length - 1];
+    step.result = result;
+    const nextId = getNextGameId(step.gameId, result, path);
+    path.push({ gameId: nextId, result: null });
+    render(); scrollToTop();
+  }
+  function finalize(result) { const step = path[path.length - 1]; step.result = result; const g = games[step.gameId]; finalResult = { gameId: step.gameId, place: result === 'win' ? g.winPlace : g.losePlace, trophy: g.trophy, placeColor: g.placeColor }; render(); scrollToTop(); }
+  function goBack() { if (finalResult) { finalResult = null; path[path.length - 1].result = null; render(); return; } if (path.length > 1) { path.pop(); path[path.length - 1].result = null; render(); } }
+  function rewindTo(idx) { finalResult = null; path = path.slice(0, idx + 1); path[path.length - 1].result = null; render(); }
+  function reset() { path = [{ gameId: 'pool1', result: null }]; finalResult = null; render(); }
+  function scrollToTop() { const card = document.getElementById('current-game'); if (card && window.innerWidth < 900) card.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+
+  render();
+</script>
+</body>
+</html>
