@@ -79,8 +79,16 @@
   .back-nav a:hover { background: rgba(0,168,150,0.15); border-color: #00A896; color: #fff; }
   .fade-in { animation: fadeIn 0.35s ease-out; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-  .scroll-hint { display: none; text-align: center; font-size: 11px; color: #00A896; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
-  #bracket-view.active .scroll-hint { display: block; }
+  .bracket-controls { display: none; justify-content: center; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  #bracket-view.active .bracket-controls { display: flex; }
+  .zoom-toggle { display: inline-flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 4px; gap: 4px; }
+  .zoom-toggle button { background: transparent; border: 0; color: #b8b8b8; padding: 7px 14px; border-radius: 999px; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: all .2s; }
+  .zoom-toggle button.active { background: #00A896; color: #0a0a0a; }
+  .zoom-toggle button:not(.active):hover { color: #fff; }
+  .scroll-hint { display: none; font-size: 11px; color: #00A896; letter-spacing: 1.5px; text-transform: uppercase; }
+  #bracket-view.active.zoom-actual .scroll-hint { display: block; }
+  #bracket-view.active.zoom-fit .mermaid svg { width: 100% !important; height: auto !important; max-width: 100% !important; }
+  #bracket-view.active.zoom-fit .mermaid-wrap { overflow-x: hidden; }
   @media (max-width: 768px) {
     body { padding: 18px 12px; }
     h1 { font-size: 34px; letter-spacing: 0.5px; }
@@ -138,7 +146,13 @@
   </div>
 
   <div id="bracket-view">
-    <div class="scroll-hint">&larr; Swipe to see the full bracket &rarr;</div>
+    <div class="bracket-controls">
+      <div class="zoom-toggle">
+        <button id="zoom-fit" class="active" onclick="setZoom('fit')">Fit to Screen</button>
+        <button id="zoom-actual" onclick="setZoom('actual')">Actual Size</button>
+      </div>
+      <span class="scroll-hint">&larr; Swipe to pan &rarr;</span>
+    </div>
     <div class="mermaid-wrap">
       <div class="mermaid">
 %%{init: {'theme':'base','themeVariables':{'fontFamily':'Inter, sans-serif','fontSize':'15px','primaryColor':'#1a1a1a','primaryTextColor':'#ffffff','primaryBorderColor':'#00A896','lineColor':'#888','secondaryColor':'#0d2a2a','tertiaryColor':'#1a1a1a'}}}%%
@@ -279,8 +293,20 @@ flowchart TD
     const bExp = document.getElementById('btn-explorer'); const bBrk = document.getElementById('btn-bracket');
     if (view === 'explorer') { explorer.style.display = ''; bracket.classList.remove('active'); bExp.classList.add('active'); bBrk.classList.remove('active'); }
     else { explorer.style.display = 'none'; bracket.classList.add('active'); bExp.classList.remove('active'); bBrk.classList.add('active');
-      if (!bracketRendered) { mermaid.run({ querySelector: '#bracket-view .mermaid' }).catch(err => console.error('Mermaid render error:', err)); bracketRendered = true; }
+      if (!bracketRendered) {
+        mermaid.run({ querySelector: '#bracket-view .mermaid' }).then(() => {
+          setZoom(window.innerWidth < 900 ? 'fit' : 'actual');
+        }).catch(err => console.error('Mermaid render error:', err));
+        bracketRendered = true;
+      }
     }
+  }
+  function setZoom(mode) {
+    const bracket = document.getElementById('bracket-view');
+    bracket.classList.remove('zoom-fit', 'zoom-actual');
+    bracket.classList.add('zoom-' + mode);
+    document.getElementById('zoom-fit').classList.toggle('active', mode === 'fit');
+    document.getElementById('zoom-actual').classList.toggle('active', mode === 'actual');
   }
 
   mermaid.initialize({ startOnLoad: false, theme: 'base', flowchart: { htmlLabels: true, curve: 'basis', nodeSpacing: 50, rankSpacing: 70, padding: 20, useMaxWidth: false }, themeVariables: { fontFamily: 'Inter, sans-serif', fontSize: '14px' } });
