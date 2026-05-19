@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SCH JV Girls - Reno Interactive Bracket</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <style>
   * { box-sizing: border-box; }
   body { margin: 0; padding: 28px 16px; background: linear-gradient(170deg, #0a0a0a 0%, #1a1a1a 50%, #0d2a2a 100%); color: #fff; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; min-height: 100vh; }
@@ -66,6 +67,65 @@
   .footer p:last-child { margin-bottom: 0; }
   .fade-in { animation: fadeIn 0.35s ease-out; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Pool play multi-game card */
+  .pool-games { display: grid; gap: 14px; margin-top: 16px; }
+  @media (min-width: 700px) { .pool-games { grid-template-columns: 1fr 1fr; } }
+  .pool-game { background: rgba(0,0,0,0.28); border: 1px solid rgba(0,168,150,0.25); border-radius: 12px; padding: 18px; }
+  .pool-game-tag { font-family: 'Bebas Neue', sans-serif; font-size: 12px; letter-spacing: 2px; color: #00A896; margin-bottom: 8px; }
+  .pool-game-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; line-height: 1; margin: 0 0 12px; }
+  .pool-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .pool-meta-grid .meta-item { padding: 8px 10px; }
+  .pool-meta-grid .meta-lbl { font-size: 9px; }
+  .pool-meta-grid .meta-val { font-size: 15px; }
+  .pool-game .matchup { padding: 10px 12px; margin-bottom: 12px; }
+  .pool-game .matchup-val { font-size: 16px; line-height: 1.3; }
+  .pool-decision { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .pool-decision button { padding: 12px 8px; border-radius: 8px; border: 2px solid; background: transparent; color: #fff; font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1.5px; cursor: pointer; transition: all .2s; }
+  .pool-decision button.win-btn { border-color: #4ade80; }
+  .pool-decision button.win-btn.selected, .pool-decision button.win-btn:hover { background: rgba(74,222,128,0.18); }
+  .pool-decision button.win-btn.selected { box-shadow: inset 0 0 0 2px #4ade80; }
+  .pool-decision button.lose-btn { border-color: #f87171; }
+  .pool-decision button.lose-btn.selected, .pool-decision button.lose-btn:hover { background: rgba(248,113,113,0.18); }
+  .pool-decision button.lose-btn.selected { box-shadow: inset 0 0 0 2px #f87171; }
+
+  .seed-callout { margin-top: 18px; padding: 16px 18px; background: rgba(0,168,150,0.10); border: 1.5px solid rgba(0,168,150,0.45); border-radius: 10px; text-align: center; }
+  .seed-callout .seed-record { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #c0c0c0; text-transform: uppercase; margin-bottom: 6px; }
+  .seed-callout .seed-headline { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 1.5px; color: #00A896; line-height: 1; margin-bottom: 6px; }
+  .seed-callout .seed-sub { font-size: 12px; color: #b0b0b0; }
+  .continue-btn { display: block; width: 100%; margin-top: 14px; padding: 18px 16px; border-radius: 12px; border: 0; background: #00A896; color: #0a0a0a; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; cursor: pointer; transition: all .2s; }
+  .continue-btn:hover { background: #00c4af; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,168,150,0.3); }
+  .continue-btn:disabled { background: rgba(255,255,255,0.06); color: #555; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* View toggle (Interactive vs Full Bracket) */
+  .view-toggle { display: inline-flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 4px; gap: 4px; margin-top: 14px; }
+  .view-toggle button { background: transparent; border: 0; color: #b8b8b8; padding: 8px 18px; border-radius: 999px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all .2s; }
+  .view-toggle button.active { background: #00A896; color: #0a0a0a; }
+  .view-toggle button:not(.active):hover { color: #fff; }
+
+  #bracket-view { display: none; }
+  #bracket-view.active { display: block; position: relative; left: 50%; right: 50%; margin-left: -49vw; margin-right: -49vw; width: 98vw; max-width: 98vw; padding: 0 12px; }
+  .mermaid-wrap { background: rgba(0,0,0,0.25); border-radius: 12px; padding: 20px 10px; overflow-x: auto; display: flex; justify-content: center; }
+  .mermaid { font-family: 'Inter', sans-serif !important; }
+  .mermaid svg { display: block; margin: 0 auto; max-width: none !important; }
+  .mermaid foreignObject { overflow: visible !important; }
+  .mermaid .nodeLabel { white-space: normal !important; padding: 8px 12px !important; line-height: 1.5 !important; display: inline-block; min-width: 200px; max-width: 240px; text-align: center; }
+  .mermaid .nodeLabel hr { border: 0; border-top: 1px solid rgba(255,255,255,0.25); margin: 6px 0; }
+
+  .bracket-controls { display: none; justify-content: center; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  #bracket-view.active .bracket-controls { display: flex; }
+  .zoom-toggle { display: inline-flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 4px; gap: 4px; }
+  .zoom-toggle button { background: transparent; border: 0; color: #b8b8b8; padding: 7px 14px; border-radius: 999px; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: all .2s; }
+  .zoom-toggle button.active { background: #00A896; color: #0a0a0a; }
+  .zoom-toggle button:not(.active):hover { color: #fff; }
+  .scroll-hint { display: none; font-size: 11px; color: #00A896; letter-spacing: 1.5px; text-transform: uppercase; }
+  #bracket-view.active.zoom-actual .scroll-hint { display: block; }
+  #bracket-view.active.zoom-fit .mermaid svg { width: 100% !important; height: auto !important; max-width: 100% !important; }
+  #bracket-view.active.zoom-fit .mermaid-wrap { overflow-x: hidden; }
+  @media (max-width: 768px) {
+    #bracket-view.active { margin-left: -12px; margin-right: -12px; width: calc(100% + 24px); max-width: none; padding: 0 8px; left: auto; right: auto; }
+    .mermaid-wrap { justify-content: flex-start; padding: 14px 8px; }
+  }
   @media (max-width: 768px) {
     body { padding: 18px 12px; }
     h1 { font-size: 34px; letter-spacing: 0.5px; }
@@ -92,6 +152,10 @@
     <p class="eyebrow">Reno Memorial Weekend &nbsp;|&nbsp; Girls 9th Level 2, Pool D</p>
     <h1>JV GIRLS &mdash; INTERACTIVE BRACKET</h1>
     <p class="sub">Pool play (2 games) &rarr; bracket placement based on standings</p>
+    <div class="view-toggle">
+      <button id="btn-explorer" class="active" onclick="switchView('explorer')">Interactive Bracket</button>
+      <button id="btn-bracket" onclick="switchView('bracket')">Full Bracket</button>
+    </div>
   </div>
 
   <div id="explorer-view">
@@ -99,6 +163,66 @@
     <div id="current-game"></div>
     <div id="decision-area"></div>
     <div class="controls" id="controls"></div>
+  </div>
+
+  <div id="bracket-view">
+    <div class="bracket-controls">
+      <div class="zoom-toggle">
+        <button id="zoom-fit" class="active" onclick="setZoom('fit')">Fit to Screen</button>
+        <button id="zoom-actual" onclick="setZoom('actual')">Actual Size</button>
+      </div>
+      <span class="scroll-hint">&larr; Swipe to pan &rarr;</span>
+    </div>
+    <div class="mermaid-wrap">
+      <div class="mermaid">
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'Inter, sans-serif','fontSize':'15px','primaryColor':'#1a1a1a','primaryTextColor':'#ffffff','primaryBorderColor':'#00A896','lineColor':'#888','secondaryColor':'#0d2a2a','tertiaryColor':'#1a1a1a'}}}%%
+flowchart TD
+    P1["<b>POOL GAME 1</b><br/>Sat May 23 &nbsp;|&nbsp; 3:15 PM<br/>Court CC50 &nbsp;|&nbsp; BLACK (Away)<hr/>SCH vs Olympic Club (Manny)"]:::locked
+    P2["<b>POOL GAME 2</b><br/>Sat May 23 &nbsp;|&nbsp; 8:15 PM<br/>Court CC21 &nbsp;|&nbsp; TEAL (Home)<hr/>SCH vs Santa Cruz Strong"]:::locked
+    P3["<b>POOL D &mdash; OTHER</b><br/>Sun May 24 &nbsp;|&nbsp; 2:00 PM<br/>Court CC46<hr/>Olympic Club vs Santa Cruz<br/><i>SCH not playing</i>"]:::locked
+    P1 --> Seed["<b>POOL D STANDINGS</b><hr/>Combined SCH record<br/>sets the seed"]
+    P2 --> Seed
+    P3 --> Seed
+    Seed -->|<b>2-0 / 1st seed</b>| G1
+    Seed -->|<b>1-1 / 2nd seed</b>| G5
+    Seed -->|<b>0-2 / 3rd seed</b>| G9
+
+    G1["<b>GAME 1 &nbsp;|&nbsp; CHAMP SEMI</b><br/>Sun May 24 &nbsp;|&nbsp; 8:15 PM<br/>Court CC49<hr/>SCH vs 1st in A"]:::gold
+    G5["<b>GAME 5 &nbsp;|&nbsp; 5/6 SEMI</b><br/>Sun May 24 &nbsp;|&nbsp; 7:00 PM<br/>Court CC49<hr/>SCH vs 2nd in A"]:::silver
+    G9["<b>GAME 9 &nbsp;|&nbsp; 9/10 SEMI</b><br/>Sun May 24 &nbsp;|&nbsp; 5:45 PM<br/>Court CC41<hr/>SCH vs 3rd in A"]:::silverlow
+
+    G1 -->|<b>WIN</b>| G3
+    G1 -->|<b>LOSE</b>| G4
+    G5 -->|<b>WIN</b>| G7
+    G5 -->|<b>LOSE</b>| G8
+    G9 -->|<b>WIN</b>| G11
+    G9 -->|<b>LOSE</b>| G12
+
+    G3["<b>GAME 3</b><br/>CHAMPIONSHIP<br/>Mon May 25 &nbsp;|&nbsp; 3:15 PM<br/>Court CC47<hr/><b>1st PLACE</b>"]:::final
+    G4["<b>GAME 4</b><br/>3rd PLACE GAME<br/>Mon May 25 &nbsp;|&nbsp; 2:00 PM<br/>Court CC10<hr/><b>3rd PLACE</b>"]:::gold
+    G7["<b>GAME 7</b><br/>5th PLACE GAME<br/>Mon May 25 &nbsp;|&nbsp; 11:30 AM<br/>Court CC42<hr/><b>5th PLACE</b>"]:::silver
+    G8["<b>GAME 8</b><br/>7th PLACE GAME<br/>Mon May 25 &nbsp;|&nbsp; 11:30 AM<br/>Court CC54<hr/><b>7th PLACE</b>"]:::silver
+    G11["<b>GAME 11</b><br/>9th PLACE GAME<br/>Mon May 25 &nbsp;|&nbsp; 10:15 AM<br/>Court CC24<hr/><b>9th PLACE</b>"]:::silverlow
+    G12["<b>GAME 12</b><br/>11th PLACE GAME<br/>Mon May 25 &nbsp;|&nbsp; 9:00 AM<br/>Court CC49<hr/><b>11th PLACE</b>"]:::silverlow
+
+    classDef locked fill:#00A896,stroke:#00A896,stroke-width:3px,color:#0a0a0a
+    classDef gold fill:#2a2317,stroke:#ffb81c,stroke-width:2px,color:#ffe9b8
+    classDef silver fill:#1e1e1e,stroke:#b8b8b8,stroke-width:2px,color:#e0e0e0
+    classDef silverlow fill:#1a1a1a,stroke:#888,stroke-width:2px,color:#c0c0c0
+    classDef final fill:#3a1a1a,stroke:#ff7878,stroke-width:3px,color:#ffd0d0
+
+    linkStyle 0,1,2 stroke:#888,stroke-width:2px
+    linkStyle 3 stroke:#ffb81c,stroke-width:3px
+    linkStyle 4 stroke:#b8b8b8,stroke-width:3px
+    linkStyle 5 stroke:#888,stroke-width:3px
+    linkStyle 6 stroke:#4ade80,stroke-width:2px
+    linkStyle 7 stroke:#f87171,stroke-width:2px
+    linkStyle 8 stroke:#4ade80,stroke-width:2px
+    linkStyle 9 stroke:#f87171,stroke-width:2px
+    linkStyle 10 stroke:#4ade80,stroke-width:2px
+    linkStyle 11 stroke:#f87171,stroke-width:2px
+      </div>
+    </div>
   </div>
 
   <div class="footer">
@@ -110,8 +234,15 @@
 
 <script>
   const games = {
-    pool1: { title: 'POOL GAME 1', tag: 'POOL D', tagClass: 'tag-pool', cardClass: 'pool', when: 'Sat May 23', time: '3:15 PM', court: 'CC50', uniform: 'BLACK (Away)', matchup: 'SCH vs Olympic Club (Manny)', note: 'First pool game. Outcome combined with Game 2 sets your Pool D seed.', winNext: 'pool2', loseNext: 'pool2' },
-    pool2: { title: 'POOL GAME 2', tag: 'POOL D', tagClass: 'tag-pool', cardClass: 'pool', when: 'Sat May 23', time: '8:15 PM', court: 'CC21', uniform: 'TEAL (Home)', matchup: 'SCH vs Santa Cruz Strong', note: 'Final pool game. Win/loss combined with Game 1 determines your bracket placement.', dynamic: true },
+    poolPlay: {
+      title: 'POOL PLAY', tag: 'POOL D', tagClass: 'tag-pool', cardClass: 'pool',
+      isPoolStage: true,
+      subGames: [
+        { key: 'g1', title: 'GAME 1', when: 'Sat May 23', time: '3:15 PM', court: 'CC50', uniform: 'BLACK (Away)', matchup: 'SCH vs Olympic Club (Manny)' },
+        { key: 'g2', title: 'GAME 2', when: 'Sat May 23', time: '8:15 PM', court: 'CC21', uniform: 'TEAL (Home)', matchup: 'SCH vs Santa Cruz Strong' }
+      ],
+      note: 'Both pool games are played regardless of result. Your combined W/L sets your Pool D seed for the bracket.'
+    },
 
     G1: { title: 'GAME 1', tag: 'CHAMPIONSHIP SEMI', tagClass: 'tag-champ', cardClass: 'champ', when: 'Sun May 24', time: '8:15 PM', court: 'CC49', matchup: 'SCH (1st in D) vs 1st in A', note: 'You are 1st in Pool D. Win = play for the championship Monday. Lose = play for 3rd place.', winNext: 'G3', loseNext: 'G4' },
     G3: { title: 'GAME 3', tag: 'CHAMPIONSHIP', tagClass: 'tag-final', cardClass: 'final-game', when: 'Mon May 25', time: '3:15 PM', court: 'CC47', matchup: 'For 1st place', isFinal: true, winPlace: '1st PLACE', losePlace: '2nd PLACE', trophy: '🏆', placeColor: '' },
@@ -126,19 +257,15 @@
     G12: { title: 'GAME 12', tag: '11th PLACE GAME', tagClass: 'tag-conso-low', cardClass: 'conso-low', when: 'Mon May 25', time: '9:00 AM', court: 'CC49', matchup: 'For 11th place', isFinal: true, winPlace: '11th PLACE', losePlace: '12th PLACE', trophy: '🏀', placeColor: 'silver' }
   };
 
-  let path = [{ gameId: 'pool1', result: null }];
-  let finalResult = null;
-
-  function getNextGameId(stepGameId, result, currentPath) {
-    if (stepGameId === 'pool2') {
-      const p1 = currentPath.find(p => p.gameId === 'pool1').result;
-      const p2 = result;
-      if (p1 === 'win' && p2 === 'win') return 'G1';
-      if (p1 === 'lose' && p2 === 'lose') return 'G9';
-      return 'G5';
-    }
-    return games[stepGameId][result === 'win' ? 'winNext' : 'loseNext'];
+  // Pool record → (seed label, next game id)
+  function computeSeed(g1, g2) {
+    if (g1 === 'win' && g2 === 'win') return { record: '2-0', seedLabel: '1st in Pool D', nextId: 'G1' };
+    if (g1 === 'lose' && g2 === 'lose') return { record: '0-2', seedLabel: '3rd in Pool D', nextId: 'G9' };
+    return { record: '1-1', seedLabel: '2nd in Pool D', nextId: 'G5' };
   }
+
+  let path = [{ gameId: 'poolPlay', subResults: { g1: null, g2: null } }];
+  let finalResult = null;
 
   function render() { renderTrail(); renderCurrent(); renderControls(); }
 
@@ -147,13 +274,73 @@
     if (path.length === 0 && !finalResult) { trail.innerHTML = ''; return; }
     const parts = [];
     path.forEach((step, i) => {
-      const g = games[step.gameId];
-      if (step.result) parts.push(`<span class="trail-item ${step.result}" onclick="rewindTo(${i})">${g.title} &nbsp;${step.result === 'win' ? 'WIN' : 'LOSS'}</span>`);
-      else parts.push(`<span class="trail-item" style="background:rgba(0,168,150,0.2);border-color:#00A896;color:#fff">${g.title} &nbsp;NOW</span>`);
+      if (step.gameId === 'poolPlay') {
+        const { g1, g2 } = step.subResults;
+        if (g1 && g2) {
+          const seed = computeSeed(g1, g2);
+          parts.push(`<span class="trail-item ${g1}" onclick="rewindTo(${i})">G1 ${g1 === 'win' ? 'W' : 'L'}</span>`);
+          parts.push('<span class="trail-arrow">&middot;</span>');
+          parts.push(`<span class="trail-item ${g2}" onclick="rewindTo(${i})">G2 ${g2 === 'win' ? 'W' : 'L'}</span>`);
+          parts.push('<span class="trail-arrow">&rarr;</span>');
+          parts.push(`<span class="trail-item" style="background:rgba(0,168,150,0.18);border-color:#00A896;color:#fff" onclick="rewindTo(${i})">${seed.seedLabel} (${seed.record})</span>`);
+        } else {
+          parts.push(`<span class="trail-item" style="background:rgba(0,168,150,0.2);border-color:#00A896;color:#fff">POOL PLAY &nbsp;NOW</span>`);
+        }
+      } else {
+        const g = games[step.gameId];
+        if (step.result) parts.push(`<span class="trail-item ${step.result}" onclick="rewindTo(${i})">${g.title} &nbsp;${step.result === 'win' ? 'WIN' : 'LOSS'}</span>`);
+        else parts.push(`<span class="trail-item" style="background:rgba(0,168,150,0.2);border-color:#00A896;color:#fff">${g.title} &nbsp;NOW</span>`);
+      }
       if (i < path.length - 1 || finalResult) parts.push('<span class="trail-arrow">&rarr;</span>');
     });
     if (finalResult) parts.push(`<span class="trail-item" style="background:rgba(74,222,128,0.15);border-color:#4ade80;color:#fff">${finalResult.place}</span>`);
     trail.innerHTML = parts.join('');
+  }
+
+  function renderPoolCard(step) {
+    const g = games.poolPlay;
+    const sub = step.subResults;
+    const bothPicked = sub.g1 && sub.g2;
+    let seedHTML = '';
+    if (bothPicked) {
+      const seed = computeSeed(sub.g1, sub.g2);
+      const next = games[seed.nextId];
+      seedHTML = `
+        <div class="seed-callout fade-in">
+          <div class="seed-record">Pool Record &middot; ${seed.record}</div>
+          <div class="seed-headline">${seed.seedLabel}</div>
+          <div class="seed-sub">Next: ${next.title} &middot; ${next.tag} &middot; ${next.when} ${next.time} &middot; Court ${next.court}</div>
+        </div>
+        <button class="continue-btn fade-in" onclick="advanceFromPool()">Continue to Bracket &rarr;</button>`;
+    } else {
+      seedHTML = `<button class="continue-btn" disabled>Pick a result for both games to continue</button>`;
+    }
+    const gameCards = g.subGames.map(sg => {
+      const picked = sub[sg.key];
+      const winSel = picked === 'win' ? 'selected' : '';
+      const loseSel = picked === 'lose' ? 'selected' : '';
+      return `
+        <div class="pool-game">
+          <div class="pool-game-tag">${sg.title}</div>
+          <div class="pool-game-title">${sg.matchup}</div>
+          <div class="pool-meta-grid">
+            <div class="meta-item"><div class="meta-lbl">Date / Tip</div><div class="meta-val">${sg.when} &middot; <span style="color:#00A896">${sg.time}</span></div></div>
+            <div class="meta-item"><div class="meta-lbl">Court / Uniform</div><div class="meta-val">${sg.court} &middot; ${sg.uniform.split(' ')[0]}</div></div>
+          </div>
+          <div class="pool-decision">
+            <button class="win-btn ${winSel}" onclick="setPoolResult('${sg.key}','win')">WIN</button>
+            <button class="lose-btn ${loseSel}" onclick="setPoolResult('${sg.key}','lose')">LOSE</button>
+          </div>
+        </div>`;
+    }).join('');
+    return `
+      <div class="game-card pool fade-in">
+        <span class="game-tag tag-pool">${g.tag}</span>
+        <h2 class="game-title">${g.title}</h2>
+        <div class="game-note">${g.note}</div>
+        <div class="pool-games">${gameCards}</div>
+        ${seedHTML}
+      </div>`;
   }
 
   function renderCurrent() {
@@ -161,11 +348,16 @@
     const dec = document.getElementById('decision-area');
     if (finalResult) {
       const placeColorClass = finalResult.placeColor === 'silver' ? 'silver' : '';
-      cur.innerHTML = `<div class="game-card result fade-in"><div class="result-trophy">${finalResult.trophy}</div><div class="result-place ${placeColorClass}">${finalResult.place}</div><div class="result-detail">${games[finalResult.gameId].title} &nbsp;|&nbsp; ${games[finalResult.gameId].when} &nbsp;|&nbsp; ${games[finalResult.gameId].time} &nbsp;|&nbsp; Court ${games[finalResult.gameId].court}</div><div class="result-count">${path.length + 1} games played &middot; tournament complete</div></div>`;
+      cur.innerHTML = `<div class="game-card result fade-in"><div class="result-trophy">${finalResult.trophy}</div><div class="result-place ${placeColorClass}">${finalResult.place}</div><div class="result-detail">${games[finalResult.gameId].title} &nbsp;|&nbsp; ${games[finalResult.gameId].when} &nbsp;|&nbsp; ${games[finalResult.gameId].time} &nbsp;|&nbsp; Court ${games[finalResult.gameId].court}</div><div class="result-count">Tournament complete</div></div>`;
       dec.innerHTML = '';
       return;
     }
     const step = path[path.length - 1];
+    if (step.gameId === 'poolPlay') {
+      cur.innerHTML = renderPoolCard(step);
+      dec.innerHTML = '';
+      return;
+    }
     const g = games[step.gameId];
     if (g.isFinal) {
       cur.innerHTML = `<div class="game-card ${g.cardClass} fade-in"><span class="game-tag ${g.tagClass}">${g.tag}</span><h2 class="game-title">${g.title}</h2><div class="game-meta"><div class="meta-item"><div class="meta-lbl">Date</div><div class="meta-val">${g.when}</div></div><div class="meta-item"><div class="meta-lbl">Tip</div><div class="meta-val teal">${g.time}</div></div><div class="meta-item"><div class="meta-lbl">Court</div><div class="meta-val">${g.court}</div></div></div><div class="matchup"><div class="matchup-lbl">Matchup</div><div class="matchup-val">${g.matchup}</div></div></div>`;
@@ -173,33 +365,107 @@
       return;
     }
     cur.innerHTML = `<div class="game-card ${g.cardClass} fade-in"><span class="game-tag ${g.tagClass}">${g.tag}</span><h2 class="game-title">${g.title}</h2><div class="game-meta"><div class="meta-item"><div class="meta-lbl">Date</div><div class="meta-val">${g.when}</div></div><div class="meta-item"><div class="meta-lbl">Tip</div><div class="meta-val teal">${g.time}</div></div><div class="meta-item"><div class="meta-lbl">Court</div><div class="meta-val">${g.court}</div></div>${g.uniform ? `<div class="meta-item"><div class="meta-lbl">Uniform</div><div class="meta-val">${g.uniform}</div></div>` : ''}</div><div class="matchup"><div class="matchup-lbl">Matchup</div><div class="matchup-val">${g.matchup}</div></div>${g.note ? `<div class="game-note">${g.note}</div>` : ''}</div>`;
-
-    const winNextId = getNextGameId(step.gameId, 'win', path);
-    const loseNextId = getNextGameId(step.gameId, 'lose', path);
-    const nextWin = games[winNextId];
-    const nextLose = games[loseNextId];
+    const nextWin = games[g.winNext];
+    const nextLose = games[g.loseNext];
     dec.innerHTML = `<div class="decision fade-in"><button class="win-btn" onclick="choose('win')">WIN<span class="label-sub">&rarr; ${nextWin.title} &middot; ${nextWin.tag}</span></button><button class="lose-btn" onclick="choose('lose')">LOSE<span class="label-sub">&rarr; ${nextLose.title} &middot; ${nextLose.tag}</span></button></div>`;
   }
 
   function renderControls() {
     const c = document.getElementById('controls');
-    const hasMoved = path.length > 1 || finalResult;
-    c.innerHTML = hasMoved ? `<button onclick="goBack()">&larr; Back one step</button><button onclick="reset()">Restart from 1st Game</button>` : '';
+    const step = path[path.length - 1];
+    const poolStarted = step && step.gameId === 'poolPlay' && (step.subResults.g1 || step.subResults.g2);
+    const hasMoved = path.length > 1 || finalResult || poolStarted;
+    c.innerHTML = hasMoved ? `<button onclick="goBack()">&larr; Back one step</button><button onclick="reset()">Restart from Pool Play</button>` : '';
+  }
+
+  function setPoolResult(gameKey, result) {
+    const step = path[path.length - 1];
+    if (step.gameId !== 'poolPlay') return;
+    step.subResults[gameKey] = result;
+    render();
+  }
+
+  function advanceFromPool() {
+    const step = path[path.length - 1];
+    if (step.gameId !== 'poolPlay') return;
+    const { g1, g2 } = step.subResults;
+    if (!g1 || !g2) return;
+    const seed = computeSeed(g1, g2);
+    path.push({ gameId: seed.nextId, result: null });
+    render();
+    scrollToTop();
   }
 
   function choose(result) {
     const step = path[path.length - 1];
     step.result = result;
-    const nextId = getNextGameId(step.gameId, result, path);
+    const g = games[step.gameId];
+    const nextId = result === 'win' ? g.winNext : g.loseNext;
     path.push({ gameId: nextId, result: null });
     render(); scrollToTop();
   }
-  function finalize(result) { const step = path[path.length - 1]; step.result = result; const g = games[step.gameId]; finalResult = { gameId: step.gameId, place: result === 'win' ? g.winPlace : g.losePlace, trophy: g.trophy, placeColor: g.placeColor }; render(); scrollToTop(); }
-  function goBack() { if (finalResult) { finalResult = null; path[path.length - 1].result = null; render(); return; } if (path.length > 1) { path.pop(); path[path.length - 1].result = null; render(); } }
-  function rewindTo(idx) { finalResult = null; path = path.slice(0, idx + 1); path[path.length - 1].result = null; render(); }
-  function reset() { path = [{ gameId: 'pool1', result: null }]; finalResult = null; render(); }
+  function finalize(result) {
+    const step = path[path.length - 1]; step.result = result;
+    const g = games[step.gameId];
+    finalResult = { gameId: step.gameId, place: result === 'win' ? g.winPlace : g.losePlace, trophy: g.trophy, placeColor: g.placeColor };
+    render(); scrollToTop();
+  }
+  function goBack() {
+    if (finalResult) { finalResult = null; path[path.length - 1].result = null; render(); return; }
+    const last = path[path.length - 1];
+    if (last.gameId === 'poolPlay') {
+      // Clear pool sub-results one at a time
+      if (last.subResults.g2) last.subResults.g2 = null;
+      else if (last.subResults.g1) last.subResults.g1 = null;
+      render(); return;
+    }
+    if (path.length > 1) { path.pop(); const prev = path[path.length - 1]; if (prev.gameId !== 'poolPlay') prev.result = null; render(); }
+  }
+  function rewindTo(idx) {
+    finalResult = null;
+    path = path.slice(0, idx + 1);
+    const last = path[path.length - 1];
+    if (last.gameId !== 'poolPlay') last.result = null;
+    render();
+  }
+  function reset() {
+    path = [{ gameId: 'poolPlay', subResults: { g1: null, g2: null } }];
+    finalResult = null;
+    render();
+  }
   function scrollToTop() { const card = document.getElementById('current-game'); if (card && window.innerWidth < 900) card.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 
+  let bracketRendered = false;
+  function switchView(view) {
+    const explorer = document.getElementById('explorer-view');
+    const bracket = document.getElementById('bracket-view');
+    const bExp = document.getElementById('btn-explorer');
+    const bBrk = document.getElementById('btn-bracket');
+    if (view === 'explorer') {
+      explorer.style.display = '';
+      bracket.classList.remove('active');
+      bExp.classList.add('active'); bBrk.classList.remove('active');
+    } else {
+      explorer.style.display = 'none';
+      bracket.classList.add('active');
+      bExp.classList.remove('active'); bBrk.classList.add('active');
+      if (!bracketRendered) {
+        mermaid.run({ querySelector: '#bracket-view .mermaid' }).then(() => {
+          setZoom(window.innerWidth < 900 ? 'fit' : 'actual');
+        }).catch(err => console.error('Mermaid render error:', err));
+        bracketRendered = true;
+      }
+    }
+  }
+  function setZoom(mode) {
+    const bracket = document.getElementById('bracket-view');
+    bracket.classList.remove('zoom-fit', 'zoom-actual');
+    bracket.classList.add('zoom-' + mode);
+    document.getElementById('zoom-fit').classList.toggle('active', mode === 'fit');
+    document.getElementById('zoom-actual').classList.toggle('active', mode === 'actual');
+  }
+
+  mermaid.initialize({ startOnLoad: false, theme: 'base', flowchart: { htmlLabels: true, curve: 'basis', nodeSpacing: 50, rankSpacing: 70, padding: 20, useMaxWidth: false }, themeVariables: { fontFamily: 'Inter, sans-serif', fontSize: '14px' } });
   render();
 </script>
 </body>
