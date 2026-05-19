@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SCH 7th Boys - Reno Interactive Bracket</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 28px 16px; background: linear-gradient(170deg, #0a0a0a 0%, #1a1a1a 50%, #0d2a2a 100%); color: #fff; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; min-height: 100vh; }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+
+  .header { text-align: center; padding-bottom: 14px; border-bottom: 2px solid rgba(0,168,150,0.3); margin-bottom: 28px; }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #00A896; margin: 0 0 8px; }
+  h1 { font-family: 'Bebas Neue', sans-serif; font-size: 52px; line-height: 1.05; letter-spacing: 1px; margin: 0 0 6px; }
+  .sub { font-size: 15px; color: #b8b8b8; margin: 0 0 16px; }
+
+  .view-toggle { display: inline-flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 4px; gap: 4px; }
+  .view-toggle button { background: transparent; border: 0; color: #b8b8b8; padding: 8px 18px; border-radius: 999px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all .2s; }
+  .view-toggle button.active { background: #00A896; color: #0a0a0a; }
+  .view-toggle button:not(.active):hover { color: #fff; }
+
+  /* TRAIL */
+  .trail { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 24px; min-height: 32px; }
+  .trail-item { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: #d0d0d0; cursor: pointer; transition: all .2s; }
+  .trail-item:hover { background: rgba(0,168,150,0.15); border-color: #00A896; color: #fff; }
+  .trail-item.win::before { content: 'W'; color: #4ade80; font-weight: 800; }
+  .trail-item.lose::before { content: 'L'; color: #f87171; font-weight: 800; }
+  .trail-arrow { color: #555; align-self: center; }
+
+  /* CURRENT GAME CARD */
+  .game-card { background: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)); border: 2px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 32px 28px; margin-bottom: 24px; transition: all .3s; }
+  .game-card.locked { border-color: #00A896; background: linear-gradient(160deg, rgba(0,168,150,0.18), rgba(0,168,150,0.03)); }
+  .game-card.gold { border-color: #ffb81c; background: linear-gradient(160deg, rgba(255,184,28,0.10), rgba(255,184,28,0.01)); }
+  .game-card.silver { border-color: #c0c0c0; background: linear-gradient(160deg, rgba(192,192,192,0.08), rgba(192,192,192,0.01)); }
+  .game-card.final-gold { border-color: #ff5252; background: linear-gradient(160deg, rgba(255,82,82,0.16), rgba(255,184,28,0.05)); }
+  .game-card.final-silver { border-color: #ff5252; background: linear-gradient(160deg, rgba(255,82,82,0.16), rgba(192,192,192,0.05)); }
+  .game-card.result { border-color: #4ade80; background: linear-gradient(160deg, rgba(74,222,128,0.18), rgba(0,168,150,0.05)); text-align: center; }
+
+  .game-tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; margin-bottom: 12px; }
+  .tag-locked { background: #00A896; color: #0a0a0a; }
+  .tag-gold { background: rgba(255,184,28,0.2); color: #ffb81c; border: 1px solid rgba(255,184,28,0.5); }
+  .tag-silver { background: rgba(192,192,192,0.15); color: #d0d0d0; border: 1px solid rgba(192,192,192,0.5); }
+  .tag-final-gold { background: rgba(255,82,82,0.2); color: #ff7878; border: 1px solid rgba(255,82,82,0.5); }
+  .tag-final-silver { background: rgba(255,82,82,0.2); color: #ff7878; border: 1px solid rgba(255,82,82,0.5); }
+
+  .game-title { font-family: 'Bebas Neue', sans-serif; font-size: 44px; line-height: 1; letter-spacing: 1px; margin: 0 0 18px; color: #fff; }
+
+  .game-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 20px; }
+  .meta-item { background: rgba(0,0,0,0.25); border-radius: 8px; padding: 12px 14px; }
+  .meta-lbl { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #888; margin-bottom: 4px; }
+  .meta-val { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 0.5px; color: #fff; }
+  .meta-val.teal { color: #00A896; }
+
+  .matchup { padding: 16px; background: rgba(0,0,0,0.3); border-radius: 8px; text-align: center; border: 1px dashed rgba(255,255,255,0.15); }
+  .matchup-lbl { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #888; margin-bottom: 6px; }
+  .matchup-val { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 1px; color: #fff; }
+
+  .game-note { margin-top: 14px; padding: 10px 14px; background: rgba(0,168,150,0.08); border-left: 3px solid #00A896; border-radius: 0 6px 6px 0; font-size: 13px; color: #c8c8c8; }
+
+  /* DECISION BUTTONS */
+  .decision { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+  .decision button { padding: 22px 18px; border-radius: 12px; border: 2px solid; background: transparent; color: #fff; font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; cursor: pointer; transition: all .2s; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .decision button .label-sub { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 2px; opacity: 0.75; }
+  .decision .win-btn { border-color: #4ade80; }
+  .decision .win-btn:hover { background: rgba(74,222,128,0.15); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(74,222,128,0.25); }
+  .decision .lose-btn { border-color: #f87171; }
+  .decision .lose-btn:hover { background: rgba(248,113,113,0.15); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(248,113,113,0.25); }
+
+  /* RESULT card */
+  .result-trophy { font-size: 60px; margin: 6px 0 12px; }
+  .result-place { font-family: 'Bebas Neue', sans-serif; font-size: 72px; letter-spacing: 2px; color: #4ade80; line-height: 1; margin-bottom: 10px; }
+  .result-place.silver { color: #d0d0d0; }
+  .result-detail { font-size: 16px; color: #d0d0d0; margin-bottom: 6px; }
+  .result-count { display: inline-block; margin-top: 14px; padding: 8px 16px; background: rgba(0,168,150,0.15); border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #00A896; }
+
+  /* CONTROLS */
+  .controls { display: flex; gap: 12px; justify-content: center; margin-top: 8px; flex-wrap: wrap; }
+  .controls button { padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.04); color: #d0d0d0; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: all .2s; }
+  .controls button:hover { background: rgba(0,168,150,0.15); border-color: #00A896; color: #fff; }
+
+  /* BRACKET VIEW */
+  #bracket-view { display: none; }
+  #bracket-view.active {
+    display: block;
+    /* Break out of the 1100px .wrap so the full bracket has horizontal room */
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -49vw;
+    margin-right: -49vw;
+    width: 98vw;
+    max-width: 98vw;
+    padding: 0 12px;
+  }
+  .mermaid-wrap { background: rgba(0,0,0,0.25); border-radius: 12px; padding: 20px 10px; overflow-x: auto; display: flex; justify-content: center; }
+  .mermaid { font-family: 'Inter', sans-serif !important; }
+  .mermaid svg { display: block; margin: 0 auto; max-width: none !important; }
+  .mermaid foreignObject { overflow: visible !important; }
+  .mermaid .nodeLabel { white-space: normal !important; padding: 8px 12px !important; line-height: 1.5 !important; display: inline-block; min-width: 200px; max-width: 240px; text-align: center; }
+  .mermaid .nodeLabel hr { border: 0; border-top: 1px solid rgba(255,255,255,0.25); margin: 6px 0; }
+
+  /* FOOTER */
+  .footer { margin-top: 28px; padding: 18px 22px; background: rgba(0,168,150,0.06); border-left: 4px solid #00A896; border-radius: 0 8px 8px 0; font-size: 13px; color: #c0c0c0; line-height: 1.6; }
+  .footer b { color: #fff; }
+  .footer p { margin: 0 0 10px; }
+  .footer p:last-child { margin-bottom: 0; }
+
+  .fade-in { animation: fadeIn 0.35s ease-out; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Mobile scroll hint for full bracket */
+  .scroll-hint { display: none; text-align: center; font-size: 11px; color: #00A896; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+  #bracket-view.active .scroll-hint { display: block; }
+
+  @media (max-width: 768px) {
+    body { padding: 18px 12px; }
+    h1 { font-size: 34px; letter-spacing: 0.5px; }
+    .eyebrow { font-size: 10px; letter-spacing: 2px; }
+    .sub { font-size: 13px; }
+    .view-toggle button { padding: 7px 12px; font-size: 11px; letter-spacing: 0.5px; }
+
+    .trail { gap: 6px; margin-bottom: 18px; }
+    .trail-item { font-size: 10px; padding: 5px 9px; }
+    .trail-arrow { font-size: 11px; }
+
+    .game-card { padding: 20px 18px; border-radius: 12px; }
+    .game-tag { font-size: 10px; letter-spacing: 1.5px; padding: 3px 8px; }
+    .game-title { font-size: 28px; margin-bottom: 14px; }
+    .game-meta { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .meta-item { padding: 10px 12px; }
+    .meta-lbl { font-size: 9px; letter-spacing: 1.5px; }
+    .meta-val { font-size: 17px; }
+    .matchup { padding: 12px; }
+    .matchup-val { font-size: 18px; }
+    .game-note { font-size: 12px; padding: 9px 12px; }
+
+    .decision { grid-template-columns: 1fr; gap: 10px; }
+    .decision button { padding: 18px 14px; font-size: 22px; }
+    .decision button .label-sub { font-size: 10px; }
+
+    .result-trophy { font-size: 48px; }
+    .result-place { font-size: 52px; }
+    .result-detail { font-size: 13px; }
+
+    .controls button { padding: 9px 16px; font-size: 11px; }
+
+    .footer { padding: 14px 16px; font-size: 12px; }
+
+    /* Full Bracket on mobile: let it scroll horizontally instead of fighting the viewport */
+    #bracket-view.active { margin-left: -12px; margin-right: -12px; width: calc(100% + 24px); max-width: none; padding: 0 8px; left: auto; right: auto; }
+    .mermaid-wrap { justify-content: flex-start; padding: 14px 8px; }
+  }
+
+  @media (max-width: 420px) {
+    h1 { font-size: 28px; }
+    .game-title { font-size: 24px; }
+    .game-meta { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <p class="eyebrow">Reno Memorial Weekend &nbsp;|&nbsp; Boys 7th Level 3 Red</p>
+    <h1>7TH GRADE BOYS &mdash; INTERACTIVE BRACKET</h1>
+    <p class="sub">Click WIN or LOSE at each game to walk the bracket</p>
+    <div class="view-toggle">
+      <button id="btn-explorer" class="active" onclick="switchView('explorer')">Interactive Bracket</button>
+      <button id="btn-bracket" onclick="switchView('bracket')">Full Bracket</button>
+    </div>
+  </div>
+
+  <!-- EXPLORER VIEW -->
+  <div id="explorer-view">
+    <div class="trail" id="trail"></div>
+    <div id="current-game"></div>
+    <div id="decision-area"></div>
+    <div class="controls" id="controls"></div>
+  </div>
+
+  <!-- BRACKET VIEW (static mermaid) -->
+  <div id="bracket-view">
+    <div class="scroll-hint">&larr; Swipe to see the full bracket &rarr;</div>
+    <div class="mermaid-wrap">
+      <div class="mermaid">
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'Inter, sans-serif','fontSize':'15px','primaryColor':'#1a1a1a','primaryTextColor':'#ffffff','primaryBorderColor':'#00A896','lineColor':'#888','secondaryColor':'#0d2a2a','tertiaryColor':'#1a1a1a'}}}%%
+flowchart TD
+    G8["<b>GAME 8 &nbsp;|&nbsp; PLAY-IN</b><br/>Sat May 23 &nbsp;|&nbsp; 7:00 PM<br/>Court CC46 &nbsp;|&nbsp; TEAL (Home)<hr/>SCH 13U Boys vs Advantage 13U"]:::locked
+    G8 -->|<b>WIN</b>| G9
+    G8 -->|<b>LOSE</b>| G21
+    G9["<b>GAME 9 &nbsp;|&nbsp; GOLD QF</b><br/>Sun May 24 &nbsp;|&nbsp; 2:00 PM<br/>Court CC17<hr/>SCH vs W1"]:::gold
+    G21["<b>GAME 21 &nbsp;|&nbsp; SILVER QF</b><br/>Sun May 24 &nbsp;|&nbsp; 12:45 PM<br/>Court CC44<hr/>SCH vs L1"]:::silver
+    G9 -->|<b>WIN</b>| G13
+    G9 -->|<b>LOSE</b>| G17
+    G21 -->|<b>WIN</b>| G25
+    G21 -->|<b>LOSE</b>| G29
+    G13["<b>GAME 13 &nbsp;|&nbsp; GOLD SEMI</b><br/>Sun May 24 &nbsp;|&nbsp; 8:15 PM<br/>Court CC45<hr/>SCH vs W10"]:::gold
+    G17["<b>GAME 17 &nbsp;|&nbsp; GOLD CONSO</b><br/>Sun May 24 &nbsp;|&nbsp; 5:45 PM<br/>Court CC25<hr/>SCH vs L10"]:::gold
+    G25["<b>GAME 25 &nbsp;|&nbsp; SILVER SEMI</b><br/>Sun May 24 &nbsp;|&nbsp; 7:00 PM<br/>Court CC21<hr/>SCH vs W22"]:::silver
+    G29["<b>GAME 29 &nbsp;|&nbsp; SILVER CONSO</b><br/>Sun May 24 &nbsp;|&nbsp; 3:15 PM<br/>Court CC23<hr/>SCH vs L22"]:::silver
+    G13 -->|<b>WIN</b>| G15
+    G13 -->|<b>LOSE</b>| G16
+    G17 -->|<b>WIN</b>| G19
+    G17 -->|<b>LOSE</b>| G20
+    G25 -->|<b>WIN</b>| G27
+    G25 -->|<b>LOSE</b>| G28
+    G29 -->|<b>WIN</b>| G31
+    G29 -->|<b>LOSE</b>| G32
+    G15["<b>GAME 15</b><br/>GOLD CHAMPIONSHIP<br/>Mon May 25 &nbsp;|&nbsp; 4:30 PM<br/>Court CC47<hr/><b>1st PLACE</b>"]:::final
+    G16["<b>GAME 16</b><br/>3rd PLACE GAME<br/>Mon May 25 &nbsp;|&nbsp; 2:00 PM<br/>Court CC23<hr/><b>3rd PLACE</b>"]:::gold
+    G19["<b>GAME 19</b><br/>5th PLACE GAME<br/>Mon May 25 &nbsp;|&nbsp; 11:30 AM<br/>Court CC40<hr/><b>5th PLACE</b>"]:::gold
+    G20["<b>GAME 20</b><br/>7th PLACE GAME<br/>Mon May 25 &nbsp;|&nbsp; 11:30 AM<br/>Court CC26<hr/><b>7th PLACE</b>"]:::gold
+    G27["<b>GAME 27</b><br/>SILVER FINAL<br/>Mon May 25 &nbsp;|&nbsp; 3:15 PM<br/>Court CC25<hr/><b>SILVER 1st</b>"]:::final
+    G28["<b>GAME 28</b><br/>SILVER 3rd PLACE<br/>Mon May 25 &nbsp;|&nbsp; 12:45 PM<br/>Court CC25<hr/><b>SILVER 3rd</b>"]:::silver
+    G31["<b>GAME 31</b><br/>SILVER 5th PLACE<br/>Mon May 25 &nbsp;|&nbsp; 11:30 AM<br/>Court CC47<hr/><b>SILVER 5th</b>"]:::silver
+    G32["<b>GAME 32</b><br/>SILVER 7th PLACE<br/>Mon May 25 &nbsp;|&nbsp; 10:15 AM<br/>Court CC25<hr/><b>SILVER 7th</b>"]:::silver
+    classDef locked fill:#00A896,stroke:#00A896,stroke-width:3px,color:#0a0a0a
+    classDef gold fill:#2a2317,stroke:#ffb81c,stroke-width:2px,color:#ffe9b8
+    classDef silver fill:#1e1e1e,stroke:#b8b8b8,stroke-width:2px,color:#e0e0e0
+    classDef final fill:#3a1a1a,stroke:#ff7878,stroke-width:3px,color:#ffd0d0
+    linkStyle 0 stroke:#4ade80,stroke-width:3px
+    linkStyle 1 stroke:#f87171,stroke-width:3px
+    linkStyle 2 stroke:#4ade80,stroke-width:2px
+    linkStyle 3 stroke:#f87171,stroke-width:2px
+    linkStyle 4 stroke:#4ade80,stroke-width:2px
+    linkStyle 5 stroke:#f87171,stroke-width:2px
+    linkStyle 6 stroke:#4ade80,stroke-width:2px
+    linkStyle 7 stroke:#f87171,stroke-width:2px
+    linkStyle 8 stroke:#4ade80,stroke-width:2px
+    linkStyle 9 stroke:#f87171,stroke-width:2px
+    linkStyle 10 stroke:#4ade80,stroke-width:2px
+    linkStyle 11 stroke:#f87171,stroke-width:2px
+    linkStyle 12 stroke:#4ade80,stroke-width:2px
+    linkStyle 13 stroke:#f87171,stroke-width:2px
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p><b>4 games guaranteed.</b> Every path leads to a final placement.</p>
+    <p><b>W1 / L1</b> = winner / loser of the JUST RESPECT vs CV Hornets play-in. <b>W10/L10, W22/L22</b> = winners / losers of the other bracket play-in games &mdash; opponents confirmed once Saturday wraps.</p>
+    <p><b>Earliest Monday tip:</b> 10:15 AM (Silver 7th place) &nbsp;|&nbsp; <b>Latest:</b> 4:30 PM (Gold Championship). All times subject to change &mdash; confirm in Jam On It app the morning of each game.</p>
+  </div>
+</div>
+
+<script>
+  // ========== GAME TREE ==========
+  const games = {
+    G8: {
+      title: 'GAME 8',
+      tag: 'PLAY-IN',
+      tagClass: 'tag-locked',
+      cardClass: 'locked',
+      when: 'Sat May 23',
+      time: '7:00 PM',
+      court: 'CC46',
+      uniform: 'TEAL (Home)',
+      matchup: 'SCH 13U vs Advantage 13U',
+      note: 'Saturday play-in. Winner enters the Gold bracket, loser enters Silver.',
+      winNext: 'G9',
+      loseNext: 'G21'
+    },
+    G9: {
+      title: 'GAME 9',
+      tag: 'GOLD QF',
+      tagClass: 'tag-gold',
+      cardClass: 'gold',
+      when: 'Sun May 24',
+      time: '2:00 PM',
+      court: 'CC17',
+      matchup: 'SCH vs W1',
+      note: 'W1 = winner of JUST RESPECT vs CV Hornets play-in.',
+      winNext: 'G13',
+      loseNext: 'G17'
+    },
+    G21: {
+      title: 'GAME 21',
+      tag: 'SILVER QF',
+      tagClass: 'tag-silver',
+      cardClass: 'silver',
+      when: 'Sun May 24',
+      time: '12:45 PM',
+      court: 'CC44',
+      matchup: 'SCH vs L1',
+      note: 'L1 = loser of JUST RESPECT vs CV Hornets play-in.',
+      winNext: 'G25',
+      loseNext: 'G29'
+    },
+    G13: {
+      title: 'GAME 13',
+      tag: 'GOLD SEMIFINAL',
+      tagClass: 'tag-gold',
+      cardClass: 'gold',
+      when: 'Sun May 24',
+      time: '8:15 PM',
+      court: 'CC45',
+      matchup: 'SCH vs W10',
+      note: 'Win = Gold Championship game Monday. Lose = 3rd place game.',
+      winNext: 'G15',
+      loseNext: 'G16'
+    },
+    G17: {
+      title: 'GAME 17',
+      tag: 'GOLD CONSOLATION',
+      tagClass: 'tag-gold',
+      cardClass: 'gold',
+      when: 'Sun May 24',
+      time: '5:45 PM',
+      court: 'CC25',
+      matchup: 'SCH vs L10',
+      note: 'Win = 5th place game. Lose = 7th place game.',
+      winNext: 'G19',
+      loseNext: 'G20'
+    },
+    G25: {
+      title: 'GAME 25',
+      tag: 'SILVER SEMIFINAL',
+      tagClass: 'tag-silver',
+      cardClass: 'silver',
+      when: 'Sun May 24',
+      time: '7:00 PM',
+      court: 'CC21',
+      matchup: 'SCH vs W22',
+      note: 'Win = Silver Final. Lose = Silver 3rd place.',
+      winNext: 'G27',
+      loseNext: 'G28'
+    },
+    G29: {
+      title: 'GAME 29',
+      tag: 'SILVER CONSOLATION',
+      tagClass: 'tag-silver',
+      cardClass: 'silver',
+      when: 'Sun May 24',
+      time: '3:15 PM',
+      court: 'CC23',
+      matchup: 'SCH vs L22',
+      note: 'Win = Silver 5th place. Lose = Silver 7th place.',
+      winNext: 'G31',
+      loseNext: 'G32'
+    },
+    G15: { title: 'GAME 15', tag: 'GOLD CHAMPIONSHIP', tagClass: 'tag-final-gold', cardClass: 'final-gold', when: 'Mon May 25', time: '4:30 PM', court: 'CC47', matchup: 'For 1st place', isFinal: true, winPlace: '1st PLACE', losePlace: '2nd PLACE', trophy: '🏆', placeColor: '' },
+    G16: { title: 'GAME 16', tag: '3rd PLACE GAME', tagClass: 'tag-gold', cardClass: 'gold', when: 'Mon May 25', time: '2:00 PM', court: 'CC23', matchup: 'For 3rd place', isFinal: true, winPlace: '3rd PLACE', losePlace: '4th PLACE', trophy: '🥉', placeColor: '' },
+    G19: { title: 'GAME 19', tag: '5th PLACE GAME', tagClass: 'tag-gold', cardClass: 'gold', when: 'Mon May 25', time: '11:30 AM', court: 'CC40', matchup: 'For 5th place', isFinal: true, winPlace: '5th PLACE', losePlace: '6th PLACE', trophy: '🏀', placeColor: '' },
+    G20: { title: 'GAME 20', tag: '7th PLACE GAME', tagClass: 'tag-gold', cardClass: 'gold', when: 'Mon May 25', time: '11:30 AM', court: 'CC26', matchup: 'For 7th place', isFinal: true, winPlace: '7th PLACE', losePlace: '8th PLACE', trophy: '🏀', placeColor: '' },
+    G27: { title: 'GAME 27', tag: 'SILVER FINAL', tagClass: 'tag-final-silver', cardClass: 'final-silver', when: 'Mon May 25', time: '3:15 PM', court: 'CC25', matchup: 'For Silver 1st', isFinal: true, winPlace: 'SILVER 1st', losePlace: 'SILVER 2nd', trophy: '🥈', placeColor: 'silver' },
+    G28: { title: 'GAME 28', tag: 'SILVER 3rd PLACE', tagClass: 'tag-silver', cardClass: 'silver', when: 'Mon May 25', time: '12:45 PM', court: 'CC25', matchup: 'For Silver 3rd', isFinal: true, winPlace: 'SILVER 3rd', losePlace: 'SILVER 4th', trophy: '🥈', placeColor: 'silver' },
+    G31: { title: 'GAME 31', tag: 'SILVER 5th PLACE', tagClass: 'tag-silver', cardClass: 'silver', when: 'Mon May 25', time: '11:30 AM', court: 'CC47', matchup: 'For Silver 5th', isFinal: true, winPlace: 'SILVER 5th', losePlace: 'SILVER 6th', trophy: '🏀', placeColor: 'silver' },
+    G32: { title: 'GAME 32', tag: 'SILVER 7th PLACE', tagClass: 'tag-silver', cardClass: 'silver', when: 'Mon May 25', time: '10:15 AM', court: 'CC25', matchup: 'For Silver 7th', isFinal: true, winPlace: 'SILVER 7th', losePlace: 'SILVER 8th', trophy: '🏀', placeColor: 'silver' }
+  };
+
+  // ========== STATE ==========
+  // path: array of {gameId, result} — result is 'win' | 'lose' for non-final games, or null for current
+  let path = [{ gameId: 'G8', result: null }];
+  let finalResult = null;
+
+  // ========== RENDER ==========
+  function render() {
+    renderTrail();
+    renderCurrent();
+    renderControls();
+  }
+
+  function renderTrail() {
+    const trail = document.getElementById('trail');
+    if (path.length === 0 && !finalResult) { trail.innerHTML = ''; return; }
+    const parts = [];
+    path.forEach((step, i) => {
+      const g = games[step.gameId];
+      if (step.result) {
+        parts.push(`<span class="trail-item ${step.result}" onclick="rewindTo(${i})">${g.title} &nbsp;${step.result === 'win' ? 'WIN' : 'LOSS'}</span>`);
+      } else {
+        parts.push(`<span class="trail-item" style="background:rgba(0,168,150,0.2);border-color:#00A896;color:#fff">${g.title} &nbsp;NOW</span>`);
+      }
+      if (i < path.length - 1 || finalResult) parts.push('<span class="trail-arrow">&rarr;</span>');
+    });
+    if (finalResult) {
+      parts.push(`<span class="trail-item" style="background:rgba(74,222,128,0.15);border-color:#4ade80;color:#fff">${finalResult.place}</span>`);
+    }
+    trail.innerHTML = parts.join('');
+  }
+
+  function renderCurrent() {
+    const cur = document.getElementById('current-game');
+    const dec = document.getElementById('decision-area');
+
+    if (finalResult) {
+      const placeColorClass = finalResult.placeColor === 'silver' ? 'silver' : '';
+      cur.innerHTML = `
+        <div class="game-card result fade-in">
+          <div class="result-trophy">${finalResult.trophy}</div>
+          <div class="result-place ${placeColorClass}">${finalResult.place}</div>
+          <div class="result-detail">${games[finalResult.gameId].title} &nbsp;|&nbsp; ${games[finalResult.gameId].when} &nbsp;|&nbsp; ${games[finalResult.gameId].time} &nbsp;|&nbsp; Court ${games[finalResult.gameId].court}</div>
+          <div class="result-count">${path.length + 1} games played &middot; tournament complete</div>
+        </div>`;
+      dec.innerHTML = '';
+      return;
+    }
+
+    const step = path[path.length - 1];
+    const g = games[step.gameId];
+
+    if (g.isFinal) {
+      // Final game — show with Win/Lose for final placement
+      cur.innerHTML = `
+        <div class="game-card ${g.cardClass} fade-in">
+          <span class="game-tag ${g.tagClass}">${g.tag}</span>
+          <h2 class="game-title">${g.title}</h2>
+          <div class="game-meta">
+            <div class="meta-item"><div class="meta-lbl">Date</div><div class="meta-val">${g.when}</div></div>
+            <div class="meta-item"><div class="meta-lbl">Tip</div><div class="meta-val teal">${g.time}</div></div>
+            <div class="meta-item"><div class="meta-lbl">Court</div><div class="meta-val">${g.court}</div></div>
+          </div>
+          <div class="matchup"><div class="matchup-lbl">Matchup</div><div class="matchup-val">${g.matchup}</div></div>
+        </div>`;
+      dec.innerHTML = `
+        <div class="decision fade-in">
+          <button class="win-btn" onclick="finalize('win')">WIN<span class="label-sub">${g.winPlace}</span></button>
+          <button class="lose-btn" onclick="finalize('lose')">LOSE<span class="label-sub">${g.losePlace}</span></button>
+        </div>`;
+      return;
+    }
+
+    cur.innerHTML = `
+      <div class="game-card ${g.cardClass} fade-in">
+        <span class="game-tag ${g.tagClass}">${g.tag}</span>
+        <h2 class="game-title">${g.title}</h2>
+        <div class="game-meta">
+          <div class="meta-item"><div class="meta-lbl">Date</div><div class="meta-val">${g.when}</div></div>
+          <div class="meta-item"><div class="meta-lbl">Tip</div><div class="meta-val teal">${g.time}</div></div>
+          <div class="meta-item"><div class="meta-lbl">Court</div><div class="meta-val">${g.court}</div></div>
+          ${g.uniform ? `<div class="meta-item"><div class="meta-lbl">Uniform</div><div class="meta-val">${g.uniform}</div></div>` : ''}
+        </div>
+        <div class="matchup"><div class="matchup-lbl">Matchup</div><div class="matchup-val">${g.matchup}</div></div>
+        ${g.note ? `<div class="game-note">${g.note}</div>` : ''}
+      </div>`;
+
+    const nextWin = games[g.winNext];
+    const nextLose = games[g.loseNext];
+    dec.innerHTML = `
+      <div class="decision fade-in">
+        <button class="win-btn" onclick="choose('win')">WIN<span class="label-sub">&rarr; ${nextWin.title} &middot; ${nextWin.tag}</span></button>
+        <button class="lose-btn" onclick="choose('lose')">LOSE<span class="label-sub">&rarr; ${nextLose.title} &middot; ${nextLose.tag}</span></button>
+      </div>`;
+  }
+
+  function renderControls() {
+    const c = document.getElementById('controls');
+    const hasMoved = path.length > 1 || finalResult;
+    c.innerHTML = hasMoved
+      ? `<button onclick="goBack()">&larr; Back one step</button><button onclick="reset()">Restart from 1st Game</button>`
+      : '';
+  }
+
+  // ========== ACTIONS ==========
+  function choose(result) {
+    const step = path[path.length - 1];
+    step.result = result;
+    const g = games[step.gameId];
+    const nextId = result === 'win' ? g.winNext : g.loseNext;
+    path.push({ gameId: nextId, result: null });
+    render();
+    scrollToTop();
+  }
+
+  function finalize(result) {
+    const step = path[path.length - 1];
+    step.result = result;
+    const g = games[step.gameId];
+    finalResult = {
+      gameId: step.gameId,
+      place: result === 'win' ? g.winPlace : g.losePlace,
+      trophy: g.trophy,
+      placeColor: g.placeColor
+    };
+    render();
+    scrollToTop();
+  }
+
+  function goBack() {
+    if (finalResult) {
+      finalResult = null;
+      path[path.length - 1].result = null;
+      render();
+      return;
+    }
+    if (path.length > 1) {
+      path.pop();
+      path[path.length - 1].result = null;
+      render();
+    }
+  }
+
+  function rewindTo(idx) {
+    finalResult = null;
+    path = path.slice(0, idx + 1);
+    path[path.length - 1].result = null;
+    render();
+  }
+
+  function reset() {
+    path = [{ gameId: 'G8', result: null }];
+    finalResult = null;
+    render();
+  }
+
+  function scrollToTop() {
+    const card = document.getElementById('current-game');
+    if (card && window.innerWidth < 900) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ========== VIEW TOGGLE ==========
+  let bracketRendered = false;
+  function switchView(view) {
+    const explorer = document.getElementById('explorer-view');
+    const bracket = document.getElementById('bracket-view');
+    const bExp = document.getElementById('btn-explorer');
+    const bBrk = document.getElementById('btn-bracket');
+    if (view === 'explorer') {
+      explorer.style.display = '';
+      bracket.classList.remove('active');
+      bExp.classList.add('active');
+      bBrk.classList.remove('active');
+    } else {
+      explorer.style.display = 'none';
+      bracket.classList.add('active');
+      bExp.classList.remove('active');
+      bBrk.classList.add('active');
+      // Render mermaid on first toggle (avoids 0-width measurement bug when container is display:none)
+      if (!bracketRendered) {
+        mermaid.run({ querySelector: '#bracket-view .mermaid' }).catch(err => console.error('Mermaid render error:', err));
+        bracketRendered = true;
+      }
+    }
+  }
+
+  // ========== INIT ==========
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'base',
+    flowchart: { htmlLabels: true, curve: 'basis', nodeSpacing: 50, rankSpacing: 70, padding: 20, useMaxWidth: false },
+    themeVariables: { fontFamily: 'Inter, sans-serif', fontSize: '14px' }
+  });
+  render();
+</script>
+</body>
+</html>
