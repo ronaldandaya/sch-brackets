@@ -60,6 +60,13 @@
   .game.team-jvg { border-left: 4px solid #b388ff; }
   .game.team-jvg .game-team-name { color: #b388ff; }
 
+  /* Event (non-game) card */
+  .game.event { border-left: 4px solid #ff7043; background: linear-gradient(155deg, rgba(255,112,67,0.10) 0%, rgba(255,112,67,0.02) 100%); border-color: rgba(255,112,67,0.3); }
+  .game.event::before { background: #ff7043; box-shadow: 0 0 0 1px #ff7043; }
+  .game.event .game-team-name { color: #ff7043; }
+  .game.event .event-icon { font-size: 22px; margin-right: 6px; }
+  .game.event a { color: #ff7043; text-decoration: underline; font-weight: 600; }
+
   .game-team-name { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 1.5px; line-height: 1; margin-bottom: 10px; }
   .game-opponent { font-size: 14px; color: #ddd; margin-bottom: 12px; font-weight: 500; }
   .game-opponent b { color: #fff; font-weight: 700; }
@@ -188,6 +195,13 @@
       </div>
     </div>
 
+    <!-- Event: All-club dinner at Reno Public Market -->
+    <div class="game event">
+      <div class="game-time">4:30<span class="ampm">PM</span></div>
+      <div class="game-team-name"><span class="event-icon">🍽️</span>SHARKS TEAM DINNER</div>
+      <div class="game-opponent">All-club early dinner — players, families, coaches. <a href="https://yelp.to/zXvK4OnxMo" target="_blank" rel="noopener">Reno Public Market</a> · 299 E Plumb Ln · variety of restaurants + bar + lots of seating.</div>
+    </div>
+
     <!-- Game 5 -->
     <div class="game team-7b">
       <div class="game-time">7:00<span class="ampm">PM</span></div>
@@ -198,6 +212,13 @@
         <div class="meta-chip"><div class="lbl">H/A</div><div class="val">Home</div></div>
         <div class="meta-chip"><div class="lbl">Uniform</div><div class="val"><span class="uniform-badge uniform-teal">TEAL</span></div></div>
       </div>
+    </div>
+
+    <!-- Event: Family Photo right after 7th Boys at CC21 -->
+    <div class="game event">
+      <div class="game-time">~7:45<span class="ampm">PM</span></div>
+      <div class="game-team-name"><span class="event-icon">📸</span>BIG SHARKS FAMILY PHOTO</div>
+      <div class="game-opponent">One group shot — entire SCH program. Head to <b>CC21</b> right after 7th Boys wraps, before JV Girls' 8:15 PM tip. Wear team colors!</div>
     </div>
 
     <!-- Game 6 -->
