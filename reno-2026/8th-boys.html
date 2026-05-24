@@ -131,7 +131,7 @@
   <div class="header">
     <p class="eyebrow">Reno Memorial Weekend &nbsp;|&nbsp; Boys 8th Level 3 White</p>
     <h1>8TH GRADE BOYS &mdash; INTERACTIVE BRACKET</h1>
-    <p class="sub">Click WIN or LOSE at each game to walk the bracket</p>
+    <p class="sub">Sat games complete &middot; explore from <b style="color:#00A896">Sun Silver G29</b> forward</p>
     <div class="view-toggle">
       <button id="btn-explorer" class="active" onclick="switchView('explorer')">Interactive Bracket</button>
       <button id="btn-bracket" onclick="switchView('bracket')">Full Bracket</button>
@@ -248,7 +248,7 @@ flowchart TD
     G13: { title: 'GAME 13', tag: 'GOLD SEMIFINAL', tagClass: 'tag-gold', cardClass: 'gold', when: 'Sun May 24', time: '12:45 PM', court: 'CC15', matchup: 'SCH vs W10', note: 'Win = Gold Championship game Monday. Lose = 3rd place game.', winNext: 'G15', loseNext: 'G16' },
     G17: { title: 'GAME 17', tag: 'GOLD CONSOLATION', tagClass: 'tag-gold', cardClass: 'gold', when: 'Sun May 24', time: '12:45 PM', court: 'CC18', matchup: 'SCH vs L10', note: 'Win = 5th place game. Lose = 7th place game.', winNext: 'G19', loseNext: 'G20' },
     G25: { title: 'GAME 25', tag: 'SILVER SEMIFINAL', tagClass: 'tag-silver', cardClass: 'silver', when: 'Sun May 24', time: '12:45 PM', court: 'CC9', matchup: 'SCH vs W22', note: 'Win = Silver Final. Lose = Silver 3rd place.', winNext: 'G27', loseNext: 'G28' },
-    G29: { title: 'GAME 29', tag: 'SILVER CONSOLATION', tagClass: 'tag-silver', cardClass: 'silver', when: 'Sun May 24', time: '11:30 AM', court: 'CC12', matchup: 'SCH vs L22', note: 'Win = Silver 5th place. Lose = Silver 7th place.', winNext: 'G31', loseNext: 'G32' },
+    G29: { title: 'GAME 29', tag: 'SILVER CONSOLATION · UP NEXT', tagClass: 'tag-locked', cardClass: 'locked', when: 'Sun May 24', time: '11:30 AM', court: 'CC12', uniform: 'BLACK (Away)', matchup: 'SCH vs CTB Academy Blue', note: 'Arrive 11:00 AM. After Sat: L 31-46 vs Legacy Hoops (play-in) + L 46-59 vs No Fear Elite (Silver QF). Win = Silver 5th place game Mon. Lose = Silver 7th place game Mon.', winNext: 'G31', loseNext: 'G32' },
     G15: { title: 'GAME 15', tag: 'GOLD CHAMPIONSHIP', tagClass: 'tag-final-gold', cardClass: 'final-gold', when: 'Mon May 25', time: '3:15 PM', court: 'CC9', matchup: 'For 1st place', isFinal: true, winPlace: '1st PLACE', losePlace: '2nd PLACE', trophy: '🏆', placeColor: '' },
     G16: { title: 'GAME 16', tag: '3rd PLACE GAME', tagClass: 'tag-gold', cardClass: 'gold', when: 'Mon May 25', time: '12:45 PM', court: 'CC7', matchup: 'For 3rd place', isFinal: true, winPlace: '3rd PLACE', losePlace: '4th PLACE', trophy: '🥉', placeColor: '' },
     G19: { title: 'GAME 19', tag: '5th PLACE GAME', tagClass: 'tag-gold', cardClass: 'gold', when: 'Mon May 25', time: '10:15 AM', court: 'CC11', matchup: 'For 5th place', isFinal: true, winPlace: '5th PLACE', losePlace: '6th PLACE', trophy: '🏀', placeColor: '' },
@@ -258,7 +258,8 @@ flowchart TD
     G31: { title: 'GAME 31', tag: 'SILVER 5th PLACE', tagClass: 'tag-silver', cardClass: 'silver', when: 'Mon May 25', time: '10:15 AM', court: 'CC18', matchup: 'For Silver 5th', isFinal: true, winPlace: 'SILVER 5th', losePlace: 'SILVER 6th', trophy: '🏀', placeColor: 'silver' },
     G32: { title: 'GAME 32', tag: 'SILVER 7th PLACE', tagClass: 'tag-silver', cardClass: 'silver', when: 'Mon May 25', time: '9:00 AM', court: 'CC19', matchup: 'For Silver 7th', isFinal: true, winPlace: 'SILVER 7th', losePlace: 'SILVER 8th', trophy: '🏀', placeColor: 'silver' }
   };
-  let path = [{ gameId: 'G8', result: null }];
+  // Start at G29 since both Sat games (G8 play-in, G21 Silver QF) are COMPLETE — both losses shown in top banner.
+  let path = [{ gameId: 'G29', result: null }];
   let finalResult = null;
 
   function render() { renderTrail(); renderCurrent(); renderControls(); }
@@ -309,7 +310,7 @@ flowchart TD
   function finalize(result) { const step = path[path.length - 1]; step.result = result; const g = games[step.gameId]; finalResult = { gameId: step.gameId, place: result === 'win' ? g.winPlace : g.losePlace, trophy: g.trophy, placeColor: g.placeColor }; render(); scrollToTop(); }
   function goBack() { if (finalResult) { finalResult = null; path[path.length - 1].result = null; render(); return; } if (path.length > 1) { path.pop(); path[path.length - 1].result = null; render(); } }
   function rewindTo(idx) { finalResult = null; path = path.slice(0, idx + 1); path[path.length - 1].result = null; render(); }
-  function reset() { path = [{ gameId: 'G8', result: null }]; finalResult = null; render(); }
+  function reset() { path = [{ gameId: 'G29', result: null }]; finalResult = null; render(); }
   function scrollToTop() { const card = document.getElementById('current-game'); if (card && window.innerWidth < 900) card.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 
   let bracketRendered = false;

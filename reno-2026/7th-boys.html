@@ -180,7 +180,7 @@
   <div class="header">
     <p class="eyebrow">Reno Memorial Weekend &nbsp;|&nbsp; Boys 7th Level 3 Red</p>
     <h1>7TH GRADE BOYS &mdash; INTERACTIVE BRACKET</h1>
-    <p class="sub">Click WIN or LOSE at each game to walk the bracket</p>
+    <p class="sub">Sat play-in complete &middot; explore from <b style="color:#00A896">Sun Silver QF</b> forward</p>
     <div class="view-toggle">
       <button id="btn-explorer" class="active" onclick="switchView('explorer')">Interactive Bracket</button>
       <button id="btn-bracket" onclick="switchView('bracket')">Full Bracket</button>
@@ -323,14 +323,15 @@ flowchart TD
     },
     G21: {
       title: 'GAME 21',
-      tag: 'SILVER QF',
-      tagClass: 'tag-silver',
-      cardClass: 'silver',
+      tag: 'SILVER QF · UP NEXT',
+      tagClass: 'tag-locked',
+      cardClass: 'locked',
       when: 'Sun May 24',
       time: '12:45 PM',
       court: 'CC44',
-      matchup: 'SCH vs L1',
-      note: 'L1 = loser of JUST RESPECT vs CV Hornets play-in.',
+      uniform: 'TEAL (Home)',
+      matchup: 'SCH vs JUST RESPECT 7th Black',
+      note: 'Arrive 12:15 PM. After Sat play-in (L 36-51 vs Advantage 13U) → into the Silver bracket.',
       winNext: 'G25',
       loseNext: 'G29'
     },
@@ -368,8 +369,8 @@ flowchart TD
       when: 'Sun May 24',
       time: '7:00 PM',
       court: 'CC21',
-      matchup: 'SCH vs W22',
-      note: 'Win = Silver Final. Lose = Silver 3rd place.',
+      matchup: 'SCH vs Westside Flight / P*Town winner',
+      note: 'Opponent confirmed after the 12:45 PM Westside Flight vs P*Town game (G22). Win = Silver Final. Lose = Silver 3rd place.',
       winNext: 'G27',
       loseNext: 'G28'
     },
@@ -381,8 +382,8 @@ flowchart TD
       when: 'Sun May 24',
       time: '3:15 PM',
       court: 'CC23',
-      matchup: 'SCH vs L22',
-      note: 'Win = Silver 5th place. Lose = Silver 7th place.',
+      matchup: 'SCH vs Westside Flight / P*Town loser',
+      note: 'Opponent confirmed after the 12:45 PM Westside Flight vs P*Town game (G22). Win = Silver 5th place. Lose = Silver 7th place.',
       winNext: 'G31',
       loseNext: 'G32'
     },
@@ -398,7 +399,8 @@ flowchart TD
 
   // ========== STATE ==========
   // path: array of {gameId, result} — result is 'win' | 'lose' for non-final games, or null for current
-  let path = [{ gameId: 'G8', result: null }];
+  // Start at G21 since G8 (Sat play-in) is COMPLETE — locked at LOSS 36-51 vs Advantage 13U, shown in top banner.
+  let path = [{ gameId: 'G21', result: null }];
   let finalResult = null;
 
   // ========== RENDER ==========
@@ -546,7 +548,8 @@ flowchart TD
   }
 
   function reset() {
-    path = [{ gameId: 'G8', result: null }];
+    // Restart from current real state (G21 Sun Silver QF), not the completed Sat play-in
+    path = [{ gameId: 'G21', result: null }];
     finalResult = null;
     render();
   }

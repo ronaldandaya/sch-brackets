@@ -151,7 +151,7 @@
   <div class="header">
     <p class="eyebrow">Reno Memorial Weekend &nbsp;|&nbsp; Girls 9th Level 2, Pool D</p>
     <h1>JV GIRLS &mdash; INTERACTIVE BRACKET</h1>
-    <p class="sub">Pool play (2 games) &rarr; bracket placement based on standings</p>
+    <p class="sub">Sat pool complete (0&ndash;2, 3rd seed) &middot; explore from <b style="color:#00A896">Sun consolation semi</b> forward</p>
     <div class="view-toggle">
       <button id="btn-explorer" class="active" onclick="switchView('explorer')">Interactive Bracket</button>
       <button id="btn-bracket" onclick="switchView('bracket')">Full Bracket</button>
@@ -184,7 +184,7 @@
       <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #00A896; margin-bottom: 6px;">Sunday · Consolation G9 · Next</div>
       <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; line-height: 1; margin-bottom: 4px;">5:45 PM · CC41</div>
       <div style="font-size: 13px; color: #d0d0d0;">vs <b style="color:#fff;">SBC - Pink</b> (3rd in Pool A)</div>
-      <div style="font-size: 11px; color: #888; margin-top: 4px;">BLACK · Arrive 5:15 PM · Monday game set by G9 result</div>
+      <div style="font-size: 11px; color: #888; margin-top: 4px;">Home · TEAL · Arrive 5:15 PM · Monday game set by G9 result</div>
     </div>
   </div>
 
@@ -282,7 +282,7 @@ flowchart TD
     G7: { title: 'GAME 7', tag: '5th PLACE GAME', tagClass: 'tag-conso-top', cardClass: 'conso-top', when: 'Mon May 25', time: '11:30 AM', court: 'CC42', matchup: 'For 5th place', isFinal: true, winPlace: '5th PLACE', losePlace: '6th PLACE', trophy: '🏀', placeColor: 'silver' },
     G8: { title: 'GAME 8', tag: '7th PLACE GAME', tagClass: 'tag-conso-top', cardClass: 'conso-top', when: 'Mon May 25', time: '11:30 AM', court: 'CC54', matchup: 'For 7th place', isFinal: true, winPlace: '7th PLACE', losePlace: '8th PLACE', trophy: '🏀', placeColor: 'silver' },
 
-    G9: { title: 'GAME 9', tag: '9TH/10TH SEMI', tagClass: 'tag-conso-low', cardClass: 'conso-low', when: 'Sun May 24', time: '5:45 PM', court: 'CC41', matchup: 'SCH (3rd in D) vs 3rd in A', note: 'You are 3rd in Pool D. Win = play for 9th place. Lose = play for 11th place.', winNext: 'G11', loseNext: 'G12' },
+    G9: { title: 'GAME 9', tag: '9TH/10TH SEMI · UP NEXT', tagClass: 'tag-pool', cardClass: 'pool', when: 'Sun May 24', time: '5:45 PM', court: 'CC41', uniform: 'TEAL (Home)', matchup: 'SCH vs SBC - Pink', note: 'After Sat pool (0-2: L 13-51 vs Olympic Club Manny + L 23-32 vs Santa Cruz Strong) → 3rd seed Pool D. SBC - Pink is locked at 3rd seed Pool A. Arrive 5:15 PM. Win = play for 9th place Mon. Lose = play for 11th place Mon.', winNext: 'G11', loseNext: 'G12' },
     G11: { title: 'GAME 11', tag: '9th PLACE GAME', tagClass: 'tag-conso-low', cardClass: 'conso-low', when: 'Mon May 25', time: '10:15 AM', court: 'CC24', matchup: 'For 9th place', isFinal: true, winPlace: '9th PLACE', losePlace: '10th PLACE', trophy: '🏀', placeColor: 'silver' },
     G12: { title: 'GAME 12', tag: '11th PLACE GAME', tagClass: 'tag-conso-low', cardClass: 'conso-low', when: 'Mon May 25', time: '9:00 AM', court: 'CC49', matchup: 'For 11th place', isFinal: true, winPlace: '11th PLACE', losePlace: '12th PLACE', trophy: '🏀', placeColor: 'silver' }
   };
@@ -294,7 +294,8 @@ flowchart TD
     return { record: '1-1', seedLabel: '2nd in Pool D', nextId: 'G5' };
   }
 
-  let path = [{ gameId: 'poolPlay', subResults: { g1: null, g2: null } }];
+  // Start at G9 — Sat pool COMPLETE (0-2 → locked 3rd seed Pool D). Result shown in top banner.
+  let path = [{ gameId: 'G9', result: null }];
   let finalResult = null;
 
   function render() { renderTrail(); renderCurrent(); renderControls(); }
@@ -405,7 +406,7 @@ flowchart TD
     const step = path[path.length - 1];
     const poolStarted = step && step.gameId === 'poolPlay' && (step.subResults.g1 || step.subResults.g2);
     const hasMoved = path.length > 1 || finalResult || poolStarted;
-    c.innerHTML = hasMoved ? `<button onclick="goBack()">&larr; Back one step</button><button onclick="reset()">Restart from Pool Play</button>` : '';
+    c.innerHTML = hasMoved ? `<button onclick="goBack()">&larr; Back one step</button><button onclick="reset()">Restart from Sun G9</button>` : '';
   }
 
   function setPoolResult(gameKey, result) {
@@ -459,7 +460,8 @@ flowchart TD
     render();
   }
   function reset() {
-    path = [{ gameId: 'poolPlay', subResults: { g1: null, g2: null } }];
+    // Restart from current real state (G9 Sun consolation semi), not the completed pool play
+    path = [{ gameId: 'G9', result: null }];
     finalResult = null;
     render();
   }
