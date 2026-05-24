@@ -86,16 +86,25 @@
     </div>
   </div>
 
-  <a href="reno-2026/saturday-overview.html" style="display: block; background: linear-gradient(135deg, rgba(0,168,150,0.18), rgba(0,168,150,0.06)); border: 1.5px solid rgba(0,168,150,0.5); border-radius: 14px; padding: 20px 22px; margin-bottom: 28px; text-decoration: none; color: inherit; transition: all .2s;">
-    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
-      <div>
-        <div style="font-size: 11px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: #00A896; margin-bottom: 4px;">Schedule at a glance</div>
-        <div style="font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 1px; color: #fff;">Saturday Overview</div>
-        <div style="font-size: 13px; color: #c0c0c0; margin-top: 4px;">All 6 games · times · courts · uniforms</div>
-      </div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px;">
+    <a href="reno-2026/saturday-overview.html" style="display: block; background: linear-gradient(135deg, rgba(0,168,150,0.18), rgba(0,168,150,0.06)); border: 1.5px solid rgba(0,168,150,0.5); border-radius: 14px; padding: 20px 22px; text-decoration: none; color: inherit; transition: all .2s;">
+      <div style="font-size: 11px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: #00A896; margin-bottom: 4px;">Schedule · Day 1</div>
+      <div style="font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 1px; color: #fff;">Saturday Overview</div>
+      <div style="font-size: 13px; color: #c0c0c0; margin-top: 4px; margin-bottom: 10px;">All 6 games · times · courts · uniforms</div>
       <div style="font-size: 13px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #00A896;">View &rarr;</div>
-    </div>
-  </a>
+    </a>
+    <a href="reno-2026/sunday-overview.html" style="display: block; background: linear-gradient(135deg, rgba(0,168,150,0.18), rgba(0,168,150,0.06)); border: 1.5px solid rgba(0,168,150,0.5); border-radius: 14px; padding: 20px 22px; text-decoration: none; color: inherit; transition: all .2s;">
+      <div style="font-size: 11px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: #00A896; margin-bottom: 4px;">Schedule · Day 2</div>
+      <div style="font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 1px; color: #fff;">Sunday Overview</div>
+      <div style="font-size: 13px; color: #c0c0c0; margin-top: 4px; margin-bottom: 10px;">Sat recap + 5 Sun games + 7B G2 conditional</div>
+      <div style="font-size: 13px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #00A896;">View &rarr;</div>
+    </a>
+  </div>
+  <style>
+    @media (max-width: 640px) {
+      .wrap > div[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
+    }
+  </style>
 
   <h2 class="section-title">Team Brackets</h2>
 
